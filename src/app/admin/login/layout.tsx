@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { requireAdminSession } from "@/lib/auth";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import "../../globals.css";
 // Adjust this to match your real folder structure (e.g., @/components/... or ../components/...)
 
@@ -20,23 +18,20 @@ export const metadata: Metadata = {
   description: "Automated pet care scheduling systems",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await requireAdminSession();
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body suppressHydrationWarning className="h-full bg-white text-gray-900">
-        <AdminSidebar user={session} />
         {/* Placed inside the body container so it executes safely on the client layout */}
         {children}
       </body>
     </html>
   );
 }
-

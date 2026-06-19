@@ -22,6 +22,12 @@ export function AdminSidebar({ user }: { user: any }) {
         <Link href="/admin/availability" className="block rounded-md px-3 py-2 hover:bg-muted">
             Availability
         </Link>
+        <Link href="/admin/analytics" className="block rounded-md px-3 py-2 hover:bg-muted">
+            Analytics
+        </Link>
+        <Link href="/admin/coupons" className="block rounded-md px-3 py-2 hover:bg-muted">
+            Coupons
+        </Link>
       </nav>
 
       <div className="mt-6">
