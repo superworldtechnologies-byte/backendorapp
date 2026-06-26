@@ -1,19 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { requireAdminSession } from "@/lib/auth";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"; 
+import { Separator } from "@/components/ui/separator";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "../../globals.css";
-// Adjust this to match your real folder structure (e.g., @/components/... or ../components/...)
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "NexPetCare | Booking Engine",
@@ -26,17 +19,42 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await requireAdminSession();
+
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={` h-full antialiased`}
     >
-      <body suppressHydrationWarning className="h-full bg-white text-gray-900">
-        <AdminSidebar user={session} />
-        {/* Placed inside the body container so it executes safely on the client layout */}
-        {children}
+      <body 
+        suppressHydrationWarning 
+        className="h-full bg-zinc-50/50  text-sm text-zinc-900 antialiased tracking-normal dark:bg-zinc-950 dark:text-zinc-50"
+      >
+        <TooltipProvider delayDuration={0}>
+          <SidebarProvider>
+            <AdminSidebar user={session} />
+            
+            <SidebarInset className="bg-white dark:bg-zinc-900">
+              {/* Header */}
+              <header className="flex h-14 shrink-0 items-center gap-2 border-b border-zinc-100 px-4 bg-white/80 backdrop-blur-md sticky top-0 z-10 dark:border-zinc-800 dark:bg-zinc-900/80">
+                <SidebarTrigger className="-ml-1 text-zinc-400 hover:text-[#4d4bcf] transition-colors" />
+                <Separator
+                  orientation="vertical"
+                  className="mr-2 h-4 bg-zinc-200 dark:bg-zinc-800"
+                />
+                {/* Clean tracking look on labels */}
+                <span className="text-[10px] font-bold text-zinc-400 tracking-widest uppercase font-mono dark:text-zinc-500">
+                  Management Console
+                </span>
+              </header>
+
+              {/* Viewport */}
+              <main className="flex-1 w-full p-4 bg-white dark:bg-zinc-900">
+                {children}
+              </main>
+            </SidebarInset>
+          </SidebarProvider>
+        </TooltipProvider>
       </body>
     </html>
   );
 }
-

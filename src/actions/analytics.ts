@@ -1,15 +1,21 @@
 "use server";
-
 import {
   collection,
   doc,
   getDoc,
+  getDocs,
   increment,
+  query,
+  serverTimestamp,
   setDoc,
   updateDoc,
+  where,
+  addDoc,
 } from "firebase/firestore";
 import { cookies, headers } from "next/headers";
 import { db } from "@/lib/firebase";
+import { getOrCreateVisitorId } from "@/lib/cookies";
+
 
 function monthKey(date = new Date()) {
   return date.toISOString().slice(0, 7);
@@ -206,4 +212,200 @@ export async function linkVisitorToCustomerAction(formData: FormData) {
   );
 
   return { success: true };
+}
+
+
+type LogPageViewInput = {
+  path: string;
+  fullPath?: string;
+  referrerUrl?: string | null;
+  userAgent?: string;
+  isPWAInstalled?: boolean;
+};
+
+function detectDevice(userAgent = "") {
+  const ua = userAgent.toLowerCase();
+
+  const type =
+    /mobile|android|iphone|ipod/.test(ua)
+      ? "mobile"
+      : /ipad|tablet/.test(ua)
+      ? "tablet"
+      : "desktop";
+
+  const os = ua.includes("windows")
+    ? "Windows"
+    : ua.includes("mac os")
+    ? "macOS"
+    : ua.includes("android")
+    ? "Android"
+    : ua.includes("iphone") || ua.includes("ipad")
+    ? "iOS"
+    : ua.includes("linux")
+    ? "Linux"
+    : "Unknown";
+
+  const browser = ua.includes("edg")
+    ? "Edge"
+    : ua.includes("chrome")
+    ? "Chrome"
+    : ua.includes("safari") && !ua.includes("chrome")
+    ? "Safari"
+    : ua.includes("firefox")
+    ? "Firefox"
+    : "Unknown";
+
+  return { type, os, browser };
+}
+
+function parseSource(referrerUrl?: string | null) {
+  if (!referrerUrl) return "direct";
+
+  try {
+    const hostname = new URL(referrerUrl).hostname.toLowerCase();
+
+    if (hostname.includes("instagram")) return "instagram";
+    if (hostname.includes("facebook")) return "facebook";
+    if (hostname.includes("linkedin")) return "linkedin";
+    if (hostname.includes("google")) return "google";
+    if (hostname.includes("twitter") || hostname.includes("x.com")) return "twitter";
+    if (hostname.includes("youtube")) return "youtube";
+    return hostname;
+  } catch {
+    return "direct";
+  }
+}
+
+function getMonthKey(date = new Date()) {
+  return date.toISOString().slice(0, 7);
+}
+
+function countryNameFromCode(code?: string | null) {
+  if (!code) return "Unknown";
+  try {
+    return new Intl.DisplayNames(["en"], { type: "region" }).of(code) || code;
+  } catch {
+    return code;
+  }
+}
+
+export async function logPageView(input: LogPageViewInput) {
+  const visitorId = await getOrCreateVisitorId();
+  const visitorRef = doc(db, "visitors", visitorId);
+  const visitorSnap = await getDoc(visitorRef);
+
+  const headerStore = await headers();
+
+  const countryCode = headerStore.get("x-vercel-ip-country");
+  const region = headerStore.get("x-vercel-ip-country-region");
+  const city = headerStore.get("x-vercel-ip-city");
+
+  const device = detectDevice(input.userAgent || "");
+  const source = parseSource(input.referrerUrl);
+  const nowIso = new Date().toISOString();
+  const monthKey = getMonthKey();
+
+  const location = {
+    country: countryNameFromCode(countryCode),
+    countryCode: countryCode || null,
+    region: region || null,
+    city: city || null,
+  };
+
+  if (!visitorSnap.exists()) {
+    await setDoc(visitorRef, {
+      id: visitorId,
+      phone: null,
+      device,
+      isPWAInstalled: Boolean(input.isPWAInstalled),
+      firstSource: source,
+      firstReferrerUrl: input.referrerUrl || null,
+      location,
+      firstSeenAt: nowIso,
+      lastSeenAt: nowIso,
+      totalVisits: 1,
+      totalPageViews: 1,
+      visitsByMonth: {
+        [monthKey]: 1,
+      },
+      pagesViewed: {
+        [input.path]: 1,
+      },
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+  } else {
+    const current = visitorSnap.data();
+    const visitsByMonth = current.visitsByMonth || {};
+    const pagesViewed = current.pagesViewed || {};
+
+    await updateDoc(visitorRef, {
+      device,
+      isPWAInstalled: Boolean(input.isPWAInstalled),
+      lastSeenAt: nowIso,
+      location,
+      totalVisits: increment(1),
+      totalPageViews: increment(1),
+      [`visitsByMonth.${monthKey}`]: Number(visitsByMonth[monthKey] || 0) + 1,
+      [`pagesViewed.${input.path}`]: Number(pagesViewed[input.path] || 0) + 1,
+      updatedAt: serverTimestamp(),
+    });
+  }
+
+  await addDoc(collection(db, "visitors", visitorId, "sessions"), {
+    path: input.path,
+    fullPath: input.fullPath || input.path,
+    source,
+    referrerUrl: input.referrerUrl || null,
+    location,
+    device,
+    isPWAInstalled: Boolean(input.isPWAInstalled),
+    startedAt: nowIso,
+    endedAt: nowIso,
+    totalDurationSeconds: 0,
+    bounced: true,
+    pages: [
+      {
+        path: input.path,
+        enteredAt: nowIso,
+        secondsSpent: 0,
+      },
+    ],
+    createdAt: serverTimestamp(),
+  });
+
+  return { success: true };
+}
+
+export async function getAnalyticsOverview() {
+  const [visitorsSnap, customersSnap, bookingsSnap] = await Promise.all([
+    getDocs(collection(db, "visitors")),
+    getDocs(collection(db, "customers")),
+    getDocs(collection(db, "bookings")),
+  ]);
+
+  const visitors = visitorsSnap.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  const customers = customersSnap.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  const bookings = bookingsSnap.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return { visitors, customers, bookings };
+}
+
+export async function getVisitorSessions(visitorId: string) {
+  const sessionsSnap = await getDocs(collection(db, "visitors", visitorId, "sessions"));
+  return sessionsSnap.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
 }

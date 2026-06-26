@@ -84,7 +84,6 @@ export async function deleteServiceAction(formData: FormData) {
   return { success: true };
 }
 
-
 export async function toggleMyAssignmentAction(formData: FormData) {
   const session = await getAdminSession();
   if (!session) return { error: "Unauthorized" };
@@ -93,6 +92,9 @@ export async function toggleMyAssignmentAction(formData: FormData) {
   const mode = String(formData.get("mode") || "").trim();
 
   if (!serviceId) return { error: "Missing service id." };
+  if (mode !== "assign" && mode !== "unassign") {
+    return { error: "Invalid mode." };
+  }
 
   const serviceRef = doc(db, "services", serviceId);
   const staffRef = doc(db, "staff", session.id);
@@ -131,7 +133,9 @@ export async function toggleMyAssignmentAction(formData: FormData) {
       },
       { merge: true }
     );
-  } else {
+  }
+
+  if (mode === "unassign") {
     await updateDoc(serviceRef, {
       staffIds: arrayRemove(session.id),
       updatedAt: new Date().toISOString(),

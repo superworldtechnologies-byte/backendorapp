@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import {
   collection,
   doc,
@@ -10,11 +10,13 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { updateAvailabilityAction } from "@/actions/availability";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CalendarDays, User, CheckCircle2, Clock } from "lucide-react";
 
 const DAYS = [
   "monday",
@@ -45,6 +47,13 @@ const defaultAvailability: AvailabilityMap = {
   saturday: { enabled: true, start: "10:00", end: "14:00" },
   sunday: { enabled: false, start: "", end: "" },
 };
+
+// Generate 30-minute intervals for Shadcn Select (00:00 to 23:30)
+const TIME_OPTIONS = Array.from({ length: 48 }).map((_, i) => {
+  const hour = Math.floor(i / 2).toString().padStart(2, "0");
+  const minute = i % 2 === 0 ? "00" : "30";
+  return `${hour}:${minute}`;
+});
 
 export function AvailabilityClient({
   currentUserId,
@@ -123,21 +132,26 @@ export function AvailabilityClient({
     startTransition(async () => {
       const result = await updateAvailabilityAction(formData);
       if (result?.success) {
-        setSavedMessage("Availability saved.");
+        setSavedMessage("Availability successfully updated.");
+        setTimeout(() => setSavedMessage(""), 3000);
       }
     });
   };
 
   return (
-    <div className="space-y-6">
-      {canManageOthers ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Select staff member</CardTitle>
+    <div className="space-y-6 w-full">
+      {canManageOthers && (
+        <Card className="w-full border-slate-200 shadow-sm dark:border-slate-800">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <User className="h-5 w-5 text-blue-500" />
+              Manage Staff Schedule
+            </CardTitle>
+            <CardDescription>Select a team member to view or edit their working hours.</CardDescription>
           </CardHeader>
           <CardContent>
             <Select value={selectedStaffId} onValueChange={setSelectedStaffId}>
-              <SelectTrigger className="w-full md:w-[360px]">
+              <SelectTrigger className="w-full md:max-w-md">
                 <SelectValue placeholder="Select staff" />
               </SelectTrigger>
               <SelectContent>
@@ -150,88 +164,123 @@ export function AvailabilityClient({
             </Select>
           </CardContent>
         </Card>
-      ) : null}
+      )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            {staffDoc?.name || "Staff"} Availability
+      <Card className="w-full border-slate-200 shadow-sm dark:border-slate-800">
+        <CardHeader className="pb-6 border-b border-slate-100 dark:border-slate-800/60">
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <CalendarDays className="h-6 w-6 text-blue-500" />
+            {staffDoc?.name ? `${staffDoc.name}'s Weekly Hours` : "Weekly Schedule"}
           </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Real-time working days and hours from Firestore.
-          </p>
+          <CardDescription>
+            Toggle days on or off and select working hours using the dropdowns.
+          </CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-4">
+        <CardContent className="pt-6 space-y-3">
           {DAYS.map((day) => {
             const item = availability[day];
 
             return (
               <div
                 key={day}
-                className="rounded-xl border p-4 space-y-4"
+                className={`flex w-full flex-col md:flex-row md:items-center justify-between rounded-xl border p-4 transition-colors duration-200 ${
+                  item.enabled
+                    ? "border-blue-100 bg-blue-50/40 dark:border-blue-900/30 dark:bg-blue-900/10"
+                    : "border-slate-100 bg-slate-50/50 opacity-75 dark:border-slate-800 dark:bg-slate-900/20"
+                }`}
               >
-                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <p className="font-medium capitalize">{day}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {item.enabled ? "Working day" : "Day off"}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <Label htmlFor={`${day}_enabled`}>
-                      {item.enabled ? "Active" : "Day off"}
+                {/* Left Side: Toggle & Day Name */}
+                <div className="flex items-center gap-4 md:w-[250px]">
+                  <Switch
+                    checked={item.enabled}
+                    onCheckedChange={(checked) =>
+                      updateDay(day, {
+                        enabled: checked,
+                        start: checked ? item.start || "09:00" : "",
+                        end: checked ? item.end || "17:00" : "",
+                      })
+                    }
+                  />
+                  <div className="flex flex-col">
+                    <Label className={`text-base font-semibold capitalize cursor-pointer ${item.enabled ? "text-blue-950 dark:text-blue-100" : "text-slate-500"}`}>
+                      {day}
                     </Label>
-                    <Switch
-                      id={`${day}_enabled`}
-                      checked={item.enabled}
-                      onCheckedChange={(checked) =>
-                        updateDay(day, {
-                          enabled: checked,
-                          start: checked ? item.start || "09:00" : "",
-                          end: checked ? item.end || "17:00" : "",
-                        })
-                      }
-                    />
+                    <span className="text-xs text-muted-foreground mt-0.5">
+                      {item.enabled ? "Working Day" : "Day Off"}
+                    </span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label>Start time</Label>
-                    <input
-                      type="time"
-                      value={item.start}
-                      disabled={!item.enabled}
-                      onChange={(e) => updateDay(day, { start: e.target.value })}
-                      className="flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm disabled:opacity-50"
-                    />
-                  </div>
+                {/* Right Side: Time Pickers */}
+                {item.enabled ? (
+                  <div className="flex flex-1 items-center gap-3 mt-4 md:mt-0 md:justify-end">
+                    <div className="flex items-center gap-2 w-full md:w-auto">
+                      <Clock className="h-4 w-4 text-slate-400 hidden md:block" />
+                      <Select 
+                        value={item.start} 
+                        onValueChange={(val) => updateDay(day, { start: val })}
+                      >
+                        <SelectTrigger className="w-full md:w-[130px] bg-white dark:bg-slate-950">
+                          <SelectValue placeholder="Start" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-[250px]">
+                          {TIME_OPTIONS.map((time) => (
+                            <SelectItem key={`start-${time}`} value={time}>
+                              {time}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                  <div className="space-y-2">
-                    <Label>End time</Label>
-                    <input
-                      type="time"
-                      value={item.end}
-                      disabled={!item.enabled}
-                      onChange={(e) => updateDay(day, { end: e.target.value })}
-                      className="flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm disabled:opacity-50"
-                    />
+                    <span className="text-sm font-medium text-slate-400">to</span>
+
+                    <div className="flex items-center gap-2 w-full md:w-auto">
+                      <Select 
+                        value={item.end} 
+                        onValueChange={(val) => updateDay(day, { end: val })}
+                      >
+                        <SelectTrigger className="w-full md:w-[130px] bg-white dark:bg-slate-950">
+                          <SelectValue placeholder="End" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-[250px]">
+                          {TIME_OPTIONS.map((time) => (
+                            <SelectItem key={`end-${time}`} value={time}>
+                              {time}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="flex flex-1 items-center md:justify-end mt-4 md:mt-0">
+                    <span className="text-sm font-medium text-slate-400 italic px-4 py-2 bg-slate-100/50 dark:bg-slate-800/50 rounded-md w-full md:w-[305px] text-center">
+                      Not Available
+                    </span>
+                  </div>
+                )}
               </div>
             );
           })}
 
-          <div className="flex items-center gap-3 pt-2">
-            <Button onClick={save} disabled={pending}>
-              {pending ? "Saving..." : "Save availability"}
+          {/* Action Footer */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 pt-6 mt-4">
+            <Button 
+              onClick={save} 
+              disabled={pending}
+              className="w-full sm:w-auto min-w-[160px] bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              {pending ? "Saving Changes..." : "Save Availability"}
             </Button>
 
-            {savedMessage ? (
-              <p className="text-sm text-emerald-600">{savedMessage}</p>
-            ) : null}
+            {savedMessage && (
+              <div className="flex items-center gap-2 text-sm text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/40 px-4 py-2 rounded-md w-full sm:w-auto animate-in fade-in slide-in-from-left-2">
+                <CheckCircle2 className="h-4 w-4" />
+                {savedMessage}
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
