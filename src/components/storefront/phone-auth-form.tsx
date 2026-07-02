@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 import { signupCustomerAction, signinCustomerAction } from "@/actions/customers";
@@ -20,7 +20,7 @@ const initialState: AuthState = {
   error: "",
 };
 
-export function PhoneAuthForm() {
+function PhoneAuthFormInner() {
   const searchParams = useSearchParams();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
 
@@ -149,5 +149,15 @@ export function PhoneAuthForm() {
         </Tabs>
       </CardContent>
     </Card>
+  );
+}
+
+// Wrap the inner component in a Suspense boundary
+export function PhoneAuthForm() {
+  return (
+    // You can replace the fallback with a loading spinner or skeleton if desired
+    <Suspense fallback={<div className="flex justify-center p-8 text-sm text-muted-foreground">Loading form...</div>}>
+      <PhoneAuthFormInner />
+    </Suspense>
   );
 }

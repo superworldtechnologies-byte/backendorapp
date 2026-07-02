@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { logPageView } from "@/actions/analytics";
 
-export function VisitorTracker() {
+function VisitorTrackerInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -29,4 +29,13 @@ export function VisitorTracker() {
   }, [pathname, searchParams]);
 
   return null;
+}
+
+// Wrap the inner component in a Suspense boundary
+export function VisitorTracker() {
+  return (
+    <Suspense fallback={null}>
+      <VisitorTrackerInner />
+    </Suspense>
+  );
 }
