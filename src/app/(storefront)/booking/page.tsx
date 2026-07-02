@@ -46,13 +46,11 @@ export default async function BookingPage({
   const pets = petsSnap.docs.map((item) => ({ id: item.id, ...item.data() }));
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
       <BookingShell
         customer={customer}
         service={service}
         pets={pets}
         serviceSlug={serviceSlug}
       />
-    </div>
   );
 }

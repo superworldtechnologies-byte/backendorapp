@@ -33,7 +33,7 @@ export default async function ServiceDetailPage({
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
+    <div className="mx-auto max-w-6xl px-4 py-10 mt-16">
       <ServiceDetail service={service} reviews={reviews} />
     </div>
   );

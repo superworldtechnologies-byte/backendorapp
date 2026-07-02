@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { VisitorTracker } from "@/components/admin/storefront/visitor-tracker";
+import Navbar from "@/components/landingpage/Navbar";
+import Footer from "@/components/landingpage/Footer";
 // Adjust this to match your real folder structure (e.g., @/components/... or ../components/...)
 
 const geistSans = Geist({
@@ -31,9 +33,10 @@ export default function RootLayout({
     >
       <body suppressHydrationWarning className="h-full bg-white text-gray-900">
               <VisitorTracker />
+      <Navbar />
 
-        {/* Placed inside the body container so it executes safely on the client layout */}
         {children}
+         <Footer></Footer>
       </body>
     </html>
   );

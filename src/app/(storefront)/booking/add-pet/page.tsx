@@ -2,9 +2,14 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AddPetForm } from "@/components/storefront/booking/add-pet-form";
 
-export default async function AddPetPage() {
+export default async function AddPetPage({
+  searchParams,
+}: {
+  searchParams: { serviceSlug?: string };
+}) {
   const cookieStore = await cookies();
   const customerPhone = cookieStore.get("customerPhone")?.value;
+  const serviceSlug = searchParams.serviceSlug ?? "";
 
   if (!customerPhone) {
     redirect("/auth?next=/booking/add-pet");
@@ -19,7 +24,7 @@ export default async function AddPetPage() {
         </p>
 
         <div className="mt-6">
-          <AddPetForm phone={customerPhone} />
+          <AddPetForm phone={customerPhone} serviceSlug={serviceSlug} />
         </div>
       </div>
     </div>

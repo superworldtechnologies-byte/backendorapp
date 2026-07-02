@@ -7,7 +7,6 @@ import {
 import { db } from "@/lib/firebase";
 import { getAdminSession } from "@/lib/auth";
 import { ServicesClient } from "@/components/admin/services-client";
-import { Briefcase } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +14,15 @@ type StaffMember = {
   id: string;
   name?: string;
   email?: string;
+};
+
+type ServiceImage = {
+  url: string;
+  path: string;
+  blurDataURL?: string;
+  width?: number;
+  height?: number;
+  alt?: string;
 };
 
 type ServiceItem = {
@@ -28,6 +36,9 @@ type ServiceItem = {
   basePrice?: number | null;
   weightTiers?: any[];
   addOns?: any[];
+  image?: ServiceImage | null;
+  beforeImage?: ServiceImage | null;
+  afterImage?: ServiceImage | null;
   staffIds?: string[];
   active?: boolean;
   createdAt?: string;
@@ -76,7 +87,7 @@ export default async function ServicesPage() {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto py-2">
-        {/* Main Client Workspace */}
+      {/* Main Client Workspace */}
       <ServicesClient
         initialServices={services}
         staff={staff}

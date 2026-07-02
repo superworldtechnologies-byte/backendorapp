@@ -289,92 +289,72 @@ function countryNameFromCode(code?: string | null) {
   }
 }
 
-export async function logPageView(input: LogPageViewInput) {
+function toSafePageKey(path: string) {
+  if (!path || path === "/") return "home";
+
+  return path
+    .replace(/^\/+/, "")
+    .replace(/\/+/g, "_")
+    .replace(/\[|\]|~|\*/g, "")
+    .replace(/[^a-zA-Z0-9_-]/g, "_");
+}
+
+export async function logPageView({
+  path,
+  fullPath,
+  referrerUrl,
+  userAgent,
+  isPWAInstalled,
+}: {
+  path: string;
+  fullPath?: string;
+  referrerUrl?: string | null;
+  userAgent?: string;
+  isPWAInstalled?: boolean;
+}) {
   const visitorId = await getOrCreateVisitorId();
+  if (!visitorId) return { error: "Missing visitor id." };
+
+  const now = new Date().toISOString();
+  const safePageKey = toSafePageKey(path);
+  const month = getMonthKey();
+  const device = detectDevice(userAgent || "");
+  const source = parseSource(referrerUrl);
+
   const visitorRef = doc(db, "visitors", visitorId);
   const visitorSnap = await getDoc(visitorRef);
-
-  const headerStore = await headers();
-
-  const countryCode = headerStore.get("x-vercel-ip-country");
-  const region = headerStore.get("x-vercel-ip-country-region");
-  const city = headerStore.get("x-vercel-ip-city");
-
-  const device = detectDevice(input.userAgent || "");
-  const source = parseSource(input.referrerUrl);
-  const nowIso = new Date().toISOString();
-  const monthKey = getMonthKey();
-
-  const location = {
-    country: countryNameFromCode(countryCode),
-    countryCode: countryCode || null,
-    region: region || null,
-    city: city || null,
-  };
 
   if (!visitorSnap.exists()) {
     await setDoc(visitorRef, {
       id: visitorId,
       phone: null,
       device,
-      isPWAInstalled: Boolean(input.isPWAInstalled),
+      isPWAInstalled: !!isPWAInstalled,
       firstSource: source,
-      firstReferrerUrl: input.referrerUrl || null,
-      location,
-      firstSeenAt: nowIso,
-      lastSeenAt: nowIso,
+      firstSeenAt: now,
+      lastSeenAt: now,
       totalVisits: 1,
-      totalPageViews: 1,
       visitsByMonth: {
-        [monthKey]: 1,
+        [month]: 1,
       },
       pagesViewed: {
-        [input.path]: 1,
+        [safePageKey]: 1,
       },
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
     });
-  } else {
-    const current = visitorSnap.data();
-    const visitsByMonth = current.visitsByMonth || {};
-    const pagesViewed = current.pagesViewed || {};
 
-    await updateDoc(visitorRef, {
-      device,
-      isPWAInstalled: Boolean(input.isPWAInstalled),
-      lastSeenAt: nowIso,
-      location,
-      totalVisits: increment(1),
-      totalPageViews: increment(1),
-      [`visitsByMonth.${monthKey}`]: Number(visitsByMonth[monthKey] || 0) + 1,
-      [`pagesViewed.${input.path}`]: Number(pagesViewed[input.path] || 0) + 1,
-      updatedAt: serverTimestamp(),
-    });
+    return { success: true, visitorId };
   }
 
-  await addDoc(collection(db, "visitors", visitorId, "sessions"), {
-    path: input.path,
-    fullPath: input.fullPath || input.path,
-    source,
-    referrerUrl: input.referrerUrl || null,
-    location,
+  await updateDoc(visitorRef, {
+    lastSeenAt: now,
     device,
-    isPWAInstalled: Boolean(input.isPWAInstalled),
-    startedAt: nowIso,
-    endedAt: nowIso,
-    totalDurationSeconds: 0,
-    bounced: true,
-    pages: [
-      {
-        path: input.path,
-        enteredAt: nowIso,
-        secondsSpent: 0,
-      },
-    ],
-    createdAt: serverTimestamp(),
+    isPWAInstalled: !!isPWAInstalled,
+    totalVisits: increment(1),
+    [`visitsByMonth.${month}`]: increment(1),
+    [`pagesViewed.${safePageKey}`]: increment(1),
   });
 
-  return { success: true };
+  return { success: true, visitorId };
 }
 
 export async function getAnalyticsOverview() {

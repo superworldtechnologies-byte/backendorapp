@@ -23,6 +23,8 @@ export function VisitorTracker() {
       isPWAInstalled:
         window.matchMedia("(display-mode: standalone)").matches ||
         (window.navigator as any).standalone === true,
+    }).catch((error) => {
+      console.error("logPageView failed", error);
     });
   }, [pathname, searchParams]);
 

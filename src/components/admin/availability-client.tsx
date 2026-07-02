@@ -144,7 +144,7 @@ export function AvailabilityClient({
         <Card className="w-full border-slate-200 shadow-sm dark:border-slate-800">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <User className="h-5 w-5 text-blue-500" />
+              <User className="h-5 w-5 text-primary" />
               Manage Staff Schedule
             </CardTitle>
             <CardDescription>Select a team member to view or edit their working hours.</CardDescription>
@@ -169,7 +169,7 @@ export function AvailabilityClient({
       <Card className="w-full border-slate-200 shadow-sm dark:border-slate-800">
         <CardHeader className="pb-6 border-b border-slate-100 dark:border-slate-800/60">
           <CardTitle className="flex items-center gap-2 text-xl">
-            <CalendarDays className="h-6 w-6 text-blue-500" />
+            <CalendarDays className="h-6 w-6 text-primary" />
             {staffDoc?.name ? `${staffDoc.name}'s Weekly Hours` : "Weekly Schedule"}
           </CardTitle>
           <CardDescription>

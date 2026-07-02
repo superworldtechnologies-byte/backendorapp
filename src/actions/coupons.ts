@@ -60,3 +60,71 @@ export async function deleteCouponAction(formData: FormData) {
   revalidatePath("/admin/coupons");
   return { success: true };
 }
+
+
+
+function toMillis(value: unknown) {
+  if (!value) return null;
+  const date = new Date(String(value));
+  const time = date.getTime();
+  return Number.isNaN(time) ? null : time;
+}
+
+export async function getAvailableCouponsAction(customerId?: string) {
+  try {
+    const customerKey = String(customerId || "").trim();
+    const snap = await getDocs(collection(db, "coupons"));
+    const now = Date.now();
+
+    const coupons = snap.docs
+      .map((doc) => {
+        const data = doc.data() as any;
+        return {
+          id: doc.id,
+          ...data,
+        };
+      })
+      .filter((coupon) => {
+        if (!coupon.active) return false;
+
+        const expiresAtMs = toMillis(coupon.expiresAt);
+        if (expiresAtMs && expiresAtMs < now) return false;
+
+        const assignedCustomerIds = Array.isArray(coupon.assignedCustomerIds)
+          ? coupon.assignedCustomerIds
+          : [];
+
+        const isPublicCoupon = assignedCustomerIds.length === 0;
+        const isAssignedToCustomer =
+          !!customerKey && assignedCustomerIds.includes(customerKey);
+
+        if (!isPublicCoupon && !isAssignedToCustomer) return false;
+
+        const usedBy = Array.isArray(coupon.usedBy) ? coupon.usedBy : [];
+        const usageLimit = String(coupon.usageLimit || "").toLowerCase();
+
+        if (
+          usageLimit !== "unlimited" &&
+          !!customerKey &&
+          usedBy.includes(customerKey)
+        ) {
+          return false;
+        }
+
+        return true;
+      })
+      .map((coupon) => ({
+        id: coupon.id,
+        code: String(coupon.code || "").toUpperCase(),
+        type: String(coupon.type || "flat"),
+        value: Number(coupon.value || 0),
+        description: String(coupon.description || ""),
+        expiresAt: coupon.expiresAt || null,
+      }));
+
+    return { coupons };
+  } catch (error) {
+    console.error("Failed to load available coupons", error);
+    return { coupons: [], error: "Failed to load coupons" };
+  }
+}

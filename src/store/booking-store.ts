@@ -33,7 +33,10 @@ type BookingState = {
   couponCode: string;
   couponDiscount: number;
   notes: string;
+  servicePrice: number;
+  matchedWeightTier: any | null;
   totalPrice: number;
+  hasHydrated: boolean;
 };
 
 type BookingActions = {
@@ -52,7 +55,9 @@ type BookingActions = {
   setCouponDiscount: (amount: number) => void;
   setNotes: (notes: string) => void;
   calculateTotal: () => void;
+  resolveServicePrice: () => void;
   resetBooking: () => void;
+  setHasHydrated: (value: boolean) => void;
 };
 
 const initialState: BookingState = {
@@ -70,13 +75,39 @@ const initialState: BookingState = {
   couponCode: "",
   couponDiscount: 0,
   notes: "",
+  servicePrice: 0,
+  matchedWeightTier: null,
   totalPrice: 0,
+  hasHydrated: false,
 };
+
+function normalizeNumber(value: unknown) {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : 0;
+}
+
+function resolveWeightTier(service: any, pet: PetState | null) {
+  if (!service || service.pricingModel !== "WEIGHT_BASED") return null;
+  if (!pet) return null;
+
+  const petWeight = normalizeNumber(pet.weight);
+  const tiers = Array.isArray(service.weightTiers) ? service.weightTiers : [];
+
+  return (
+    tiers.find((tier: any) => {
+      const min = normalizeNumber(tier.minKg);
+      const max = normalizeNumber(tier.maxKg);
+      return petWeight >= min && petWeight <= max;
+    }) || null
+  );
+}
 
 export const useBookingStore = create<BookingState & BookingActions>()(
   persist(
     (set, get) => ({
       ...initialState,
+
+      setHasHydrated: (value) => set({ hasHydrated: value }),
 
       setStep: (step) => set({ step }),
       nextStep: () => set((state) => ({ step: Math.min(5, state.step + 1) })),
@@ -84,7 +115,8 @@ export const useBookingStore = create<BookingState & BookingActions>()(
 
       setService: (service) => {
         set({ service });
-        setTimeout(() => get().calculateTotal(), 0);
+        get().resolveServicePrice();
+        get().calculateTotal();
       },
 
       setCustomer: (customer) =>
@@ -92,14 +124,19 @@ export const useBookingStore = create<BookingState & BookingActions>()(
           customer: { ...state.customer, ...customer },
         })),
 
-      setSelectedPet: (pet) => set({ selectedPet: pet }),
+      setSelectedPet: (pet) => {
+        set({ selectedPet: pet });
+        get().resolveServicePrice();
+        get().calculateTotal();
+      },
 
-      updateSelectedPet: (pet) =>
+      updateSelectedPet: (pet) => {
         set((state) => ({
-          selectedPet: state.selectedPet
-            ? { ...state.selectedPet, ...pet }
-            : null,
-        })),
+          selectedPet: state.selectedPet ? { ...state.selectedPet, ...pet } : null,
+        }));
+        get().resolveServicePrice();
+        get().calculateTotal();
+      },
 
       toggleAddOn: (addon) => {
         const exists = get().selectedAddOns.some((item) => item.id === addon.id);
@@ -114,7 +151,7 @@ export const useBookingStore = create<BookingState & BookingActions>()(
           });
         }
 
-        setTimeout(() => get().calculateTotal(), 0);
+        get().calculateTotal();
       },
 
       setSelectedStaffId: (staffId) => set({ selectedStaffId: staffId }),
@@ -123,18 +160,47 @@ export const useBookingStore = create<BookingState & BookingActions>()(
       setCouponCode: (code) => set({ couponCode: code }),
       setCouponDiscount: (amount) => {
         set({ couponDiscount: amount });
-        setTimeout(() => get().calculateTotal(), 0);
+        get().calculateTotal();
       },
       setNotes: (notes) => set({ notes }),
 
+      resolveServicePrice: () => {
+        const { service, selectedPet } = get();
+
+        if (!service) {
+          set({ servicePrice: 0, matchedWeightTier: null });
+          return;
+        }
+
+        if (service.pricingModel === "WEIGHT_BASED") {
+          const matchedTier = resolveWeightTier(service, selectedPet);
+          const price = normalizeNumber(matchedTier?.price);
+          set({
+            matchedWeightTier: matchedTier,
+            servicePrice: price,
+          });
+          return;
+        }
+
+        set({
+          matchedWeightTier: null,
+          servicePrice: normalizeNumber(service.basePrice),
+        });
+      },
+
       calculateTotal: () => {
-        const { service, selectedAddOns, couponDiscount } = get();
-        const basePrice = Number(service?.basePrice || 0);
+        const { servicePrice, selectedAddOns, couponDiscount } = get();
+
         const addOnsTotal = selectedAddOns.reduce(
-          (sum, item) => sum + Number(item.price || 0),
+          (sum, item) => sum + normalizeNumber(item.price),
           0
         );
-        const total = Math.max(0, basePrice + addOnsTotal - Number(couponDiscount || 0));
+
+        const total = Math.max(
+          0,
+          normalizeNumber(servicePrice) + addOnsTotal - normalizeNumber(couponDiscount)
+        );
+
         set({ totalPrice: total });
       },
 
@@ -143,6 +209,19 @@ export const useBookingStore = create<BookingState & BookingActions>()(
     {
       name: "petromus-booking-store",
       storage: createJSONStorage(() => localStorage),
+      version: 2,
+      migrate: (persistedState: any, version) => {
+        if (version < 2) {
+          return {
+            ...persistedState,
+            servicePrice: 0,
+            matchedWeightTier: null,
+            totalPrice: 0,
+            hasHydrated: false,
+          };
+        }
+        return persistedState;
+      },
       partialize: (state) => ({
         step: state.step,
         service: state.service,
@@ -155,8 +234,15 @@ export const useBookingStore = create<BookingState & BookingActions>()(
         couponCode: state.couponCode,
         couponDiscount: state.couponDiscount,
         notes: state.notes,
+        servicePrice: state.servicePrice,
+        matchedWeightTier: state.matchedWeightTier,
         totalPrice: state.totalPrice,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+        state?.resolveServicePrice();
+        state?.calculateTotal();
+      },
     }
   )
 );

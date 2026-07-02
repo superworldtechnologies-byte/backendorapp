@@ -25,6 +25,42 @@ import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 
 
+type NoScrollNumberInputProps = React.ComponentProps<typeof Input>;
+
+function NoScrollNumberInput({
+  className,
+  onKeyDown,
+  onFocus,
+  ...props
+}: NoScrollNumberInputProps) {
+  return (
+    <Input
+    type="number"
+      {...props}
+      inputMode="decimal"
+      className={cn("no-spinner", className)}
+      onKeyDown={(e) => {
+        if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+          e.preventDefault();
+        }
+        onKeyDown?.(e);
+      }}
+      onWheel={(e) => {
+        e.currentTarget.blur();
+      }}
+      onFocus={(e) => {
+        e.currentTarget.addEventListener(
+          "wheel",
+          (event) => event.preventDefault(),
+          { passive: false }
+        );
+        onFocus?.(e);
+      }}
+    />
+  );
+}
+
+
 type StaffMember = {
   id: string;
   name?: string;
@@ -210,8 +246,7 @@ function WeightTierRow({
         </Field>
 
         <Field label="Min kg">
-          <Input
-            type="number"
+          <NoScrollNumberInput 
             min={0}
             value={tier.minKg}
             onChange={(e) => onChange("minKg", e.target.value)}
@@ -221,8 +256,7 @@ function WeightTierRow({
         </Field>
 
         <Field label="Max kg">
-          <Input
-            type="number"
+          <NoScrollNumberInput 
             min={0}
             value={tier.maxKg}
             onChange={(e) => onChange("maxKg", e.target.value)}
@@ -232,8 +266,7 @@ function WeightTierRow({
         </Field>
 
         <Field label="Price (₹)">
-          <Input
-            type="number"
+          <NoScrollNumberInput 
             min={0}
             step="0.01"
             value={tier.price}
@@ -280,8 +313,7 @@ function AddOnRow({
         </Field>
 
         <Field label="Price (₹)">
-          <Input
-            type="number"
+          <NoScrollNumberInput 
             min={0}
             step="0.01"
             value={addon.price}
@@ -292,8 +324,7 @@ function AddOnRow({
         </Field>
 
         <Field label="Duration (mins)">
-          <Input
-            type="number"
+          <NoScrollNumberInput 
             min={0}
             value={addon.durationMinutes}
             onChange={(e) => onChange("durationMinutes", e.target.value)}
@@ -366,6 +397,8 @@ export function ServiceForm({
 }: ServiceFormProps) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
+  const [isActive, setIsActive] = useState(service?.active ?? true);
+
 
   const [pricingModel, setPricingModel] = useState<"FIXED" | "WEIGHT_BASED">(
     service?.pricingModel || "FIXED"
@@ -517,9 +550,8 @@ export function ServiceForm({
         <div className="space-y-6 p-7">
           <Field label="Duration" hint="minutes">
             <div className="relative w-40">
-              <Input
+              <NoScrollNumberInput
                 name="durationMinutes"
-                type="number"
                 min={5}
                 defaultValue={service?.durationMinutes || 60}
                 className="h-10 rounded-xl border-border/40 bg-muted/20 pr-14 text-sm focus:bg-background"
@@ -541,9 +573,8 @@ export function ServiceForm({
             <Field label="Base price (₹)">
               <div className="relative w-48">
                 <IndianRupee className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/50" />
-                <Input
+                <NoScrollNumberInput
                   name="basePrice"
-                  type="number"
                   min={0}
                   step="0.01"
                   defaultValue={service?.basePrice || 0}
@@ -661,33 +692,32 @@ export function ServiceForm({
       <Section>
         <div className="flex flex-col gap-4 p-7">
           <div className="rounded-2xl border border-border/50 bg-muted/20 p-5">
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">Active service</p>
-                  <p className="text-sm text-muted-foreground">
-                    Customers can book this service when enabled.
-                  </p>
-                </div>
-                <Switch
-                  id="active-service"
-                  defaultChecked={service?.active ?? true}
-                  onCheckedChange={(checked) => {
-                    const input = document.querySelector(
-                      'input[name="active"]'
-                    ) as HTMLInputElement | null;
-                    if (input) input.value = checked ? "true" : "false";
-                  }}
-                />
-              </div>
-              <input
-                type="hidden"
-                name="active"
-                defaultValue={(service?.active ?? true) ? "true" : "false"}
-              />
-            </div>
-          </div>
+  <div className="flex items-start gap-3">
+    <input
+      id="active-service"
+      name="active"
+      type="checkbox"
+      checked={isActive}
+      onChange={(e) => setIsActive(e.target.checked)}
+      className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-2 focus:ring-primary"
+    />
 
+    <div className="space-y-1">
+      <Label
+        htmlFor="active-service"
+        className="text-sm font-medium text-foreground cursor-pointer"
+      >
+        Active service
+      </Label>
+      <p className="text-sm text-muted-foreground">
+        Customers can book this service when enabled.
+      </p>
+      <p className="text-xs text-muted-foreground">
+        Current status: {isActive ? "Active" : "Inactive"}
+      </p>
+    </div>
+  </div>
+</div>
           {error && <p className="text-sm font-medium text-destructive">{error}</p>}
 
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">

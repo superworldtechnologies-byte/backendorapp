@@ -19,6 +19,7 @@ import {
     CircleDot,
     UserCheck,
     PawPrint,
+    X,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ServiceForm } from "./service-form";
@@ -240,7 +241,7 @@ function ServiceCard({
         <div
             className={cn(
                 "group rounded-[20px] border border-border/40 bg-background transition-all duration-200 hover:-translate-y-px hover:border-border/80",
-                !service.active && "opacity-50"
+                !service.active && " border-red-500 hover:border-red-600"
             )}
         >
             <div className="p-7">
@@ -294,6 +295,8 @@ function ServiceCard({
 
                     {/* Actions */}
                     <div className="flex shrink-0 items-center gap-2">
+
+
                         <button
                             type="button"
                             onClick={onEdit}
@@ -324,6 +327,16 @@ function ServiceCard({
                                 </button>
                             )
                         )}
+
+                        {
+                            !service.active && <div
+
+                                className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-transparent px-4 py-2 text-sm text-red-600 transition-all hover:bg-red-50 active:scale-95"
+                            >
+                                <X className="h-3.5 w-3.5" />
+                                Service is Inavtive
+                            </div>
+                        }
                     </div>
                 </div>
 

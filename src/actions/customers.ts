@@ -13,6 +13,12 @@ import {
 import { db } from "@/lib/firebase";
 import { linkVisitorToCustomerAction } from "@/actions/analytics";
 
+
+export async function getCustomerPhoneFromCookie() {
+  const cookieStore = await cookies();
+  return cookieStore.get("customerPhone")?.value || null;
+}
+
 async function setCustomerCookie(phone: string) {
   const cookieStore = await cookies();
 
