@@ -43,8 +43,8 @@ export function CouponsClient({ initialCoupons }: { initialCoupons: any[] }) {
       ) : (
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {initialCoupons.map((coupon) => (
-            <Card 
-              key={coupon.id} 
+            <Card
+              key={coupon.id}
               className="flex flex-col overflow-hidden border-slate-200 shadow-sm transition-all hover:shadow-md dark:border-slate-800"
             >
               <CardHeader className="flex flex-row items-start justify-between pb-3">
@@ -59,7 +59,7 @@ export function CouponsClient({ initialCoupons }: { initialCoupons: any[] }) {
                         {coupon.value}% OFF
                       </Badge>
                     ) : (
-                      <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-400 border-none shadow-none">
+                      <Badge className="bg-blue-100 text-primary hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-400 border-none shadow-none">
                         ₹{coupon.value} OFF
                       </Badge>
                     )}
@@ -71,13 +71,12 @@ export function CouponsClient({ initialCoupons }: { initialCoupons: any[] }) {
                 </div>
 
                 {/* Status Badge */}
-                <Badge 
-                  variant="outline" 
-                  className={`border shadow-sm text-xs px-2 py-0.5 rounded-full ${
-                    coupon.active 
-                      ? "border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-900/50 dark:bg-emerald-900/20" 
-                      : "border-slate-200 bg-slate-50 text-slate-500 dark:border-slate-800 dark:bg-slate-900/50"
-                  }`}
+                <Badge
+                  variant="outline"
+                  className={`border shadow-sm text-xs px-2 py-0.5 rounded-full ${coupon.active
+                    ? "border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-900/50 dark:bg-emerald-900/20"
+                    : "border-slate-200 bg-slate-50 text-slate-500 dark:border-slate-800 dark:bg-slate-900/50"
+                    }`}
                 >
                   {coupon.active ? "Active" : "Disabled"}
                 </Badge>
@@ -90,7 +89,7 @@ export function CouponsClient({ initialCoupons }: { initialCoupons: any[] }) {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-8 rounded-full border-blue-200 bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 dark:border-blue-900/50 dark:bg-slate-950 dark:text-blue-400 dark:hover:bg-blue-900/20"
+                  className="h-8 rounded-full border-blue-200 bg-white text-primary hover:bg-blue-50 hover:text-primary dark:border-blue-900/50 dark:bg-slate-950 dark:text-blue-400 dark:hover:bg-blue-900/20"
                   onClick={() => {
                     setEditing(coupon);
                     setOpen(true);
@@ -100,13 +99,13 @@ export function CouponsClient({ initialCoupons }: { initialCoupons: any[] }) {
                   Edit
                 </Button>
 
-                <form 
+                <form
                   action={deleteCouponAction as unknown as (formData: FormData) => Promise<void>}
                 >
                   <input type="hidden" name="couponId" value={coupon.id} />
-                  <Button 
-                    type="submit" 
-                    variant="outline" 
+                  <Button
+                    type="submit"
+                    variant="outline"
                     size="sm"
                     className="h-8 rounded-full border-rose-200 bg-white text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:border-rose-900/50 dark:bg-slate-950 dark:text-rose-400 dark:hover:bg-rose-900/20"
                   >

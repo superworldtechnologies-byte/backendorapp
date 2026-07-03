@@ -16,7 +16,7 @@ function formatDateTime(date?: string, time?: string) {
 function getStatusVariant(status?: string) {
   switch (status?.toLowerCase()) {
     case "confirmed":
-      return "bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400";
+      return "bg-blue-100 text-primary hover:bg-blue-200 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400";
     case "completed":
       return "bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400";
     case "cancelled":
@@ -89,7 +89,7 @@ export function BookingDetailsSheet({
               <p><span className="font-medium">Breed:</span> {pet.breed || "-"}</p>
               <p><span className="font-medium">Type:</span> {pet.type || "-"}</p>
               <p className="flex items-center gap-2 pt-1">
-                <span className="font-medium">Vaccinated:</span> 
+                <span className="font-medium">Vaccinated:</span>
                 <Badge variant={pet.vaccinated ? "default" : "secondary"} className={pet.vaccinated ? "bg-emerald-500 hover:bg-emerald-600" : ""}>
                   {pet.vaccinated ? "Yes" : "No"}
                 </Badge>

@@ -74,7 +74,7 @@ export default function AdminCalendar({ staff, events }: AdminCalendarProps) {
       case "completed":
         return "bg-emerald-500 text-white border-emerald-600";
       case "confirmed":
-        return "bg-blue-500 text-white border-blue-600";
+        return "bg-blue-500 text-white border-primary";
       case "pending":
         return "bg-amber-500 text-white border-amber-600";
       case "cancelled":

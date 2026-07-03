@@ -67,7 +67,7 @@ export function AddToHomeScreen({ logo }: { logo: string }) {
       // Android/Chrome – trigger native install prompt
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
-      
+
       if (outcome === 'accepted') {
         setDeferredPrompt(null);
         setShowDialog(false);
@@ -86,7 +86,7 @@ export function AddToHomeScreen({ logo }: { logo: string }) {
       <div className="w-full max-w-sm animate-in slide-in-from-bottom-10 duration-300">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
           <div className="p-6 text-center">
-            
+
             {/* Logo Wrapper */}
             <div className="mx-auto w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mb-4 shadow-sm border border-gray-100">
               <Image
@@ -101,7 +101,7 @@ export function AddToHomeScreen({ logo }: { logo: string }) {
             <h3 className="text-xl font-bold text-gray-900 mb-2">
               Add to Home Screen
             </h3>
-            
+
             {/* Conditional Text vs Instructions */}
             {showIosInstructions ? (
               <div className="text-gray-600 text-sm leading-relaxed text-left bg-gray-50 p-4 rounded-xl mt-4">
@@ -126,12 +126,12 @@ export function AddToHomeScreen({ logo }: { logo: string }) {
             >
               {showIosInstructions ? 'Close' : 'Not now'}
             </button>
-            
+
             {/* Hide the primary button if instructions are showing to force them to use the browser share button */}
             {!showIosInstructions && (
               <button
                 onClick={handleAction}
-                className="py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-sm"
+                className="py-3 bg-primary text-white font-medium rounded-xl hover:bg-primary transition-colors shadow-sm"
               >
                 {deferredPrompt ? 'Install App' : 'How to Add'}
               </button>

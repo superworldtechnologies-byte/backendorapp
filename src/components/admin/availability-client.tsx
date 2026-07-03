@@ -184,11 +184,10 @@ export function AvailabilityClient({
             return (
               <div
                 key={day}
-                className={`flex w-full flex-col md:flex-row md:items-center justify-between rounded-xl border p-4 transition-colors duration-200 ${
-                  item.enabled
-                    ? "border-blue-100 bg-blue-50/40 dark:border-blue-900/30 dark:bg-blue-900/10"
-                    : "border-slate-100 bg-slate-50/50 opacity-75 dark:border-slate-800 dark:bg-slate-900/20"
-                }`}
+                className={`flex w-full flex-col md:flex-row md:items-center justify-between rounded-xl border p-4 transition-colors duration-200 ${item.enabled
+                  ? "border-blue-100 bg-blue-50/40 dark:border-blue-900/30 dark:bg-blue-900/10"
+                  : "border-slate-100 bg-slate-50/50 opacity-75 dark:border-slate-800 dark:bg-slate-900/20"
+                  }`}
               >
                 {/* Left Side: Toggle & Day Name */}
                 <div className="flex items-center gap-4 md:w-[250px]">
@@ -217,8 +216,8 @@ export function AvailabilityClient({
                   <div className="flex flex-1 items-center gap-3 mt-4 md:mt-0 md:justify-end">
                     <div className="flex items-center gap-2 w-full md:w-auto">
                       <Clock className="h-4 w-4 text-slate-400 hidden md:block" />
-                      <Select 
-                        value={item.start} 
+                      <Select
+                        value={item.start}
                         onValueChange={(val) => updateDay(day, { start: val })}
                       >
                         <SelectTrigger className="w-full md:w-[130px] bg-white dark:bg-slate-950">
@@ -237,8 +236,8 @@ export function AvailabilityClient({
                     <span className="text-sm font-medium text-slate-400">to</span>
 
                     <div className="flex items-center gap-2 w-full md:w-auto">
-                      <Select 
-                        value={item.end} 
+                      <Select
+                        value={item.end}
                         onValueChange={(val) => updateDay(day, { end: val })}
                       >
                         <SelectTrigger className="w-full md:w-[130px] bg-white dark:bg-slate-950">
@@ -267,10 +266,10 @@ export function AvailabilityClient({
 
           {/* Action Footer */}
           <div className="flex flex-col sm:flex-row items-center gap-4 pt-6 mt-4">
-            <Button 
-              onClick={save} 
+            <Button
+              onClick={save}
               disabled={pending}
-              className="w-full sm:w-auto min-w-[160px] bg-blue-600 hover:bg-blue-700 text-white"
+              className="w-full sm:w-auto min-w-[160px] bg-primary hover:bg-primary text-white"
             >
               {pending ? "Saving Changes..." : "Save Availability"}
             </Button>

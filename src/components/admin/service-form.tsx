@@ -35,7 +35,7 @@ function NoScrollNumberInput({
 }: NoScrollNumberInputProps) {
   return (
     <Input
-    type="number"
+      type="number"
       {...props}
       inputMode="decimal"
       className={cn("no-spinner", className)}
@@ -246,7 +246,7 @@ function WeightTierRow({
         </Field>
 
         <Field label="Min kg">
-          <NoScrollNumberInput 
+          <NoScrollNumberInput
             min={0}
             value={tier.minKg}
             onChange={(e) => onChange("minKg", e.target.value)}
@@ -256,7 +256,7 @@ function WeightTierRow({
         </Field>
 
         <Field label="Max kg">
-          <NoScrollNumberInput 
+          <NoScrollNumberInput
             min={0}
             value={tier.maxKg}
             onChange={(e) => onChange("maxKg", e.target.value)}
@@ -266,7 +266,7 @@ function WeightTierRow({
         </Field>
 
         <Field label="Price (₹)">
-          <NoScrollNumberInput 
+          <NoScrollNumberInput
             min={0}
             step="0.01"
             value={tier.price}
@@ -313,7 +313,7 @@ function AddOnRow({
         </Field>
 
         <Field label="Price (₹)">
-          <NoScrollNumberInput 
+          <NoScrollNumberInput
             min={0}
             step="0.01"
             value={addon.price}
@@ -324,7 +324,7 @@ function AddOnRow({
         </Field>
 
         <Field label="Duration (mins)">
-          <NoScrollNumberInput 
+          <NoScrollNumberInput
             min={0}
             value={addon.durationMinutes}
             onChange={(e) => onChange("durationMinutes", e.target.value)}
@@ -543,7 +543,7 @@ export function ServiceForm({
         <SectionHeader
           icon={<Clock3 className="h-4.5 w-4.5" />}
           iconBg="bg-blue-50"
-          iconColor="text-blue-600"
+          iconColor="text-primary"
           title="Duration & Pricing"
           subtitle="How long it takes and what it costs"
         />
@@ -692,32 +692,32 @@ export function ServiceForm({
       <Section>
         <div className="flex flex-col gap-4 p-7">
           <div className="rounded-2xl border border-border/50 bg-muted/20 p-5">
-  <div className="flex items-start gap-3">
-    <input
-      id="active-service"
-      name="active"
-      type="checkbox"
-      checked={isActive}
-      onChange={(e) => setIsActive(e.target.checked)}
-      className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-2 focus:ring-primary"
-    />
+            <div className="flex items-start gap-3">
+              <input
+                id="active-service"
+                name="active"
+                type="checkbox"
+                checked={isActive}
+                onChange={(e) => setIsActive(e.target.checked)}
+                className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-2 focus:ring-primary"
+              />
 
-    <div className="space-y-1">
-      <Label
-        htmlFor="active-service"
-        className="text-sm font-medium text-foreground cursor-pointer"
-      >
-        Active service
-      </Label>
-      <p className="text-sm text-muted-foreground">
-        Customers can book this service when enabled.
-      </p>
-      <p className="text-xs text-muted-foreground">
-        Current status: {isActive ? "Active" : "Inactive"}
-      </p>
-    </div>
-  </div>
-</div>
+              <div className="space-y-1">
+                <Label
+                  htmlFor="active-service"
+                  className="text-sm font-medium text-foreground cursor-pointer"
+                >
+                  Active service
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  Customers can book this service when enabled.
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Current status: {isActive ? "Active" : "Inactive"}
+                </p>
+              </div>
+            </div>
+          </div>
           {error && <p className="text-sm font-medium text-destructive">{error}</p>}
 
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">

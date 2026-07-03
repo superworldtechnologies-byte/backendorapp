@@ -22,7 +22,7 @@ export function CouponForm({
 }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
-  
+
   const [date, setDate] = useState<Date | undefined>(
     coupon?.expiresAt ? new Date(coupon.expiresAt) : undefined
   );
@@ -48,11 +48,11 @@ export function CouponForm({
     <form onSubmit={submit} className="space-y-4">
       <div className="space-y-1.5">
         <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Coupon Code</Label>
-        <Input 
-          name="code" 
-          defaultValue={coupon?.code || ""} 
-          placeholder="e.g. SUMMER25" 
-          required 
+        <Input
+          name="code"
+          defaultValue={coupon?.code || ""}
+          placeholder="e.g. SUMMER25"
+          required
           className="h-9 text-sm font-medium"
         />
       </div>
@@ -70,7 +70,7 @@ export function CouponForm({
                   <Percent className="h-3.5 w-3.5" /> Percentage
                 </div>
               </SelectItem>
-              <SelectItem value="flat" className="text-blue-700 dark:text-blue-400 font-medium">
+              <SelectItem value="flat" className="text-primary dark:text-blue-400 font-medium">
                 <div className="flex items-center gap-2">
                   <IndianRupee className="h-3.5 w-3.5" /> Flat Amount
                 </div>
@@ -81,12 +81,12 @@ export function CouponForm({
 
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Value</Label>
-          <Input 
-            name="value" 
-            type="number" 
-            defaultValue={coupon?.value || 0} 
-            placeholder="0" 
-            required 
+          <Input
+            name="value"
+            type="number"
+            defaultValue={coupon?.value || 0}
+            placeholder="0"
+            required
             className="h-9 text-sm"
           />
         </div>
@@ -141,10 +141,10 @@ export function CouponForm({
             />
           </PopoverContent>
         </Popover>
-        <input 
-          type="hidden" 
-          name="expiresAt" 
-          value={date ? date.toISOString() : ""} 
+        <input
+          type="hidden"
+          name="expiresAt"
+          value={date ? date.toISOString() : ""}
         />
       </div>
 

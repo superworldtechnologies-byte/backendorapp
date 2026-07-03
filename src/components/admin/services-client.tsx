@@ -89,7 +89,7 @@ function ServiceIcon({ service }: { service: any }) {
         );
     }
     return (
-        <span className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+        <span className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-primary">
             <Sparkles className="h-6 w-6" />
         </span>
     );
@@ -263,7 +263,7 @@ function ServiceCard({
                                     className={cn(
                                         "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium",
                                         service.active
-                                            ? "bg-blue-50 text-blue-800"
+                                            ? "bg-blue-50 "
                                             : "bg-muted text-muted-foreground"
                                     )}
                                 >
@@ -320,7 +320,7 @@ function ServiceCard({
                                 <button
                                     type="button"
                                     onClick={() => onToggle("assign")}
-                                    className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-transparent px-4 py-2 text-sm text-blue-700 transition-all hover:bg-blue-50 active:scale-95"
+                                    className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-transparent px-4 py-2 text-sm text-primary transition-all hover:bg-blue-50 active:scale-95"
                                 >
                                     <UserPlus className="h-3.5 w-3.5" />
                                     Assign me
@@ -388,7 +388,7 @@ function ServiceCard({
 function EmptyState({ onCreate }: { onCreate: () => void }) {
     return (
         <div className="rounded-[20px] border border-dashed border-border/50 bg-muted/20 py-24 text-center">
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-primary">
                 <Scissors className="h-7 w-7" />
             </div>
             <h3 className="text-lg font-medium text-foreground">No services yet</h3>
@@ -398,7 +398,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
             <button
                 type="button"
                 onClick={onCreate}
-                className="mt-7 inline-flex items-center gap-2 rounded-full bg-blue-700 px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-blue-800 active:scale-95"
+                className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-blue-800 active:scale-95"
             >
                 <Plus className="h-4 w-4" />
                 Add first service
@@ -479,7 +479,7 @@ export function ServicesClient({
                             className={cn(
                                 "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-[13px] transition-all active:scale-95",
                                 filter === key
-                                    ? "border-blue-600 bg-blue-700 text-white"
+                                    ? "border-blue-600 bg-primary text-white"
                                     : "border-border/50 bg-transparent text-muted-foreground hover:border-border/80 hover:bg-muted/50"
                             )}
                         >
@@ -498,7 +498,7 @@ export function ServicesClient({
                     <p className="text-sm text-muted-foreground">No services match this filter.</p>
                     <button
                         type="button"
-                        className="mt-3 text-sm text-blue-700 underline-offset-2 hover:underline"
+                        className="mt-3 text-sm text-primary underline-offset-2 hover:underline"
                         onClick={() => setFilter("all")}
                     >
                         Clear filter

@@ -29,7 +29,7 @@ const statusOptions = ["all", "pending", "confirmed", "completed", "cancelled"];
 function getStatusStyles(status: string) {
   switch (status?.toLowerCase()) {
     case "confirmed":
-      return "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900 hover:bg-blue-100/80";
+      return "bg-blue-50 text-primary border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900 hover:bg-blue-100/80";
     case "completed":
       return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900 hover:bg-emerald-100/80";
     case "cancelled":
@@ -191,8 +191,8 @@ export function BookingsTable({ bookings }: { bookings: any[] }) {
 
             {/* Custom styled actionable contextual buttons */}
             <div className="flex flex-wrap gap-2">
-              <Button 
-                variant={showFilters ? "secondary" : "outline"} 
+              <Button
+                variant={showFilters ? "secondary" : "outline"}
                 onClick={() => setShowFilters((prev) => !prev)}
                 className={showFilters ? "bg-slate-200 text-slate-900 border-slate-300 font-medium" : ""}
               >
@@ -200,8 +200,8 @@ export function BookingsTable({ bookings }: { bookings: any[] }) {
                 Filters
               </Button>
 
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={handleExcelExport}
                 className="border-emerald-200 text-emerald-700 bg-emerald-50/50 hover:bg-emerald-600 hover:text-white dark:border-emerald-900 dark:text-emerald-400 dark:bg-emerald-950/20 transition-all duration-200"
               >
@@ -209,8 +209,8 @@ export function BookingsTable({ bookings }: { bookings: any[] }) {
                 Excel
               </Button>
 
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={handleXmlExport}
                 className="border-indigo-200 text-indigo-700 bg-indigo-50/50 hover:bg-indigo-600 hover:text-white dark:border-indigo-900 dark:text-indigo-400 dark:bg-indigo-950/20 transition-all duration-200"
               >
@@ -271,7 +271,7 @@ export function BookingsTable({ bookings }: { bookings: any[] }) {
                       mode="single"
                       selected={dateFilter ? parseISO(dateFilter) : undefined}
                       onSelect={(date) => setDateFilter(date ? format(date, "yyyy-MM-dd") : "")}
-                      
+
                     />
                   </PopoverContent>
                 </Popover>
@@ -369,11 +369,11 @@ export function BookingsTable({ bookings }: { bookings: any[] }) {
 
                         <td className="px-4 py-4">
                           <div className="space-y-1">
-                            <Badge variant={pet.vaccinated ? "secondary" : "outline"} className={cn("font-medium ",pet.vaccinated ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900 hover:bg-emerald-100/80" : "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-900 hover:bg-red-100/80")}>
+                            <Badge variant={pet.vaccinated ? "secondary" : "outline"} className={cn("font-medium ", pet.vaccinated ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900 hover:bg-emerald-100/80" : "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-900 hover:bg-red-100/80")}>
                               {pet.vaccinated ? "Vaccinated" : "Not vaccinated"}
                             </Badge>
                             <p className="text-[11px] text-muted-foreground pl-1">
-                              {pet.vaccinatedAt || pet.vaccinationDate }
+                              {pet.vaccinatedAt || pet.vaccinationDate}
                             </p>
                           </div>
                         </td>
