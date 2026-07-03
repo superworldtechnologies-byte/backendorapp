@@ -104,7 +104,7 @@ export default async function BookingsPage() {
             </article>
           ))}
         </div>
-      )}
+      )} 
     </section>
   );
 }
