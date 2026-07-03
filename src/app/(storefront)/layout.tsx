@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   description: "Automated pet care scheduling systems",
   manifest: "/manifest.json",
   icons: {
-    apple: "/logohome.jpg", 
+    apple: "/logohome.jpg",
   },
   // Tip 2 & Tip 5: Standalone mode and Transparent Status Bar
   appleWebApp: {
@@ -55,10 +55,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+
+      <head>
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+        <meta name="viewport" content="initial-scale=1, viewport-fit=cover" />
+      </head>
       <body suppressHydrationWarning className="h-full bg-white text-gray-900">
-        
+
         <VisitorTracker />
-        
+
         {/* 
           Tip 6: Make the header fixed (BUT ONLY ON MOBILE APP).
           We use our `standalone:` prefix to apply the fixed position and 
@@ -76,7 +84,7 @@ export default function RootLayout({
         <main className="standalone:mt-[calc(env(safe-area-inset-top)+4rem)] standalone:pb-[env(safe-area-inset-bottom)] native-scroll">
           {children}
         </main>
-        
+
         <Footer />
         <AddToHomeScreen logo="/logohome.jpg" />
         <ServiceWorkerRegister />
