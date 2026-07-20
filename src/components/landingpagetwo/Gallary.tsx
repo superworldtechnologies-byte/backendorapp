@@ -1,20 +1,23 @@
 'use client';
 
 import PawIcon from '@/icons/icon1';
-import Image from 'next/image';
 import { useInView } from 'react-intersection-observer';
 import { cn } from '@/lib/utils';
 
-const dogImages = [
-    'https://images.unsplash.com/photo-1517849845537-4d257902454a',
-    'https://images.unsplash.com/photo-1548199973-03cce0bbc87b',
-    'https://images.unsplash.com/photo-1587300003388-59208cc962cb',
-    'https://images.unsplash.com/photo-1525253086316-d0c936c814f8',
-    'https://images.unsplash.com/photo-1518717758536-85ae29035b6d',
-    'https://images.unsplash.com/photo-1537151625747-768eb6cf92b2',
-];
+const defaultGalleryData = {
+    tagLabel: "Gallery",
+    heading: <>Happy moments with the pets <br className="hidden sm:block" /> that brighten our days</>,
+    images: [
+        { src: 'https://images.unsplash.com/photo-1517849845537-4d257902454a', alt: 'Cute puppy looking up' },
+        { src: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b', alt: 'Two dogs running on grass' },
+        { src: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb', alt: 'Golden retriever profile' },
+        { src: 'https://images.unsplash.com/photo-1525253086316-d0c936c814f8', alt: 'Puppy playing with toy' },
+        { src: 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d', alt: 'Happy dog tongue out' },
+        { src: 'https://images.unsplash.com/photo-1537151625747-768eb6cf92b2', alt: 'Small dog sitting down' },
+    ]
+};
 
-export default function GallerySection() {
+export default function GallerySection({ data = defaultGalleryData }) {
     // Observers for header and gallery entries
     const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.15 });
     const { ref: galleryRef, inView: galleryInView } = useInView({ triggerOnce: true, threshold: 0.1 });
@@ -31,7 +34,7 @@ export default function GallerySection() {
                     )}>
                         <PawIcon size={18} className="fill-[#FFC357] text-[#FFC357]" />
                         <span className="text-[17px] text-zinc-800">
-                            Gallery
+                            {data.tagLabel}
                         </span>
                     </div>
 
@@ -40,9 +43,7 @@ export default function GallerySection() {
                         "mx-auto max-w-3xl text-3xl sm:text-4xl lg:text-5xl leading-tight text-zinc-800 transition-all duration-700 delay-100 ease-out transform",
                         headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                     )}>
-                        Happy moments with the pets
-                        <br className="hidden sm:block" />
-                        that brighten our days
+                        {data.heading}
                     </h2>
                 </div>
             </div>
@@ -60,7 +61,7 @@ export default function GallerySection() {
                         key={i}
                         className="flex shrink-0 gap-5 animate-logo-cloud"
                     >
-                        {dogImages.map((img, index) => (
+                        {data.images.map((img, index) => (
                             <div
                                 key={`${i}-${index}`}
                                 className={cn(
@@ -73,8 +74,8 @@ export default function GallerySection() {
                                 )}
                             >
                                 <img
-                                    src={`${img}?auto=format&fit=crop&w=800&q=80`}
-                                    alt={`Dog ${index + 1}`}
+                                    src={`${img.src}?auto=format&fit=crop&w=800&q=80`}
+                                    alt={img.alt || `Gallery image ${index + 1}`}
                                     className="object-cover transition duration-500 h-full w-full hover:scale-110"
                                 />
                             </div>

@@ -6,31 +6,30 @@ import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 import { cn } from "@/lib/utils";
 
-const steps = [
-  {
-    icon: <MapPin className=" h-7 w-7 bg-[#FFC357] p-1.5 rounded-full text-white " />,
-    title: "Book Your Appointment",
-    description:
-      "Pick a date and time that fits your schedule, and secure a session for your pet’s grooming or wellness visit.",
-    delay: "delay-100"
-  },
-  {
-    icon: <MapPin className=" h-7 w-7 bg-[#FFC357] p-1.5 rounded-full text-white " />,
-    title: "Stop by Our Clinic",
-    description:
-      "Visit with your pet and let our experienced team provide gentle, professional treatment.",
-    delay: "delay-300"
-  },
-  {
-    icon: <MapPin className=" h-7 w-7 bg-[#FFC357] p-1.5 rounded-full text-white " />,
-    title: "Leave With a Happy Pet",
-    description:
-      "After their visit, your pet heads home feeling refreshed, healthier, and full of joy. Whether it’s a cleaner coat or improved wellness.",
-    delay: "delay-500"
-  },
-];
+const defaultHowItWorksData = {
+  tagline: "How it works",
+  heading: "Straightforward steps to give your pet the best care",
 
-export default function HowItWorksSection() {
+  steps: [
+    {
+      title: "Book Your Appointment",
+      description:
+        "Pick a date and time that fits your schedule, and secure a session for your pet’s grooming or wellness visit."
+    },
+    {
+      title: "Stop by Our Clinic",
+      description:
+        "Visit with your pet and let our experienced team provide gentle, professional treatment."
+    },
+    {
+      title: "Leave With a Happy Pet",
+      description:
+        "After their visit, your pet heads home feeling refreshed, healthier, and full of joy. Whether it’s a cleaner coat or improved wellness."
+    }
+  ]
+};
+
+export default function HowItWorksSection({ data = defaultHowItWorksData }) {
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.15,
@@ -51,7 +50,7 @@ export default function HowItWorksSection() {
               )}>
                 <PawIcon className="h-6 w-6 text-[#FFC357]" />
                 <span className="text-[17px] text-zinc-800">
-                  How it works
+                  {data.tagline}
                 </span>
               </div>
 
@@ -60,7 +59,7 @@ export default function HowItWorksSection() {
                 "max-w-[500px] text-3xl leading-tight text-zinc-800 md:text-4xl lg:text-[44px] lg:leading-[1.15] transition-all duration-700 delay-100 ease-out transform",
                 inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
               )}>
-                Straightforward steps to give your pet the best care
+                {data.heading}
               </h2>
             </div>
 
@@ -81,16 +80,19 @@ export default function HowItWorksSection() {
 
           {/* Right Side (Staggered Step Cards) */}
           <div className="flex flex-col gap-6">
-            {steps.map((step) => (
+            {data.steps.map((step, index) => (
               <div
-                key={step.title}
+                key={step.title || index}
+                style={{
+                  transitionDelay: `${(index * 200) + 100}ms`
+                }}
                 className={cn(
                   "rounded-2xl bg-white p-6 shadow-sm transition-all duration-700 ease-out transform",
-                  inView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-[0.98]",
-                  step.delay
+                  inView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-[0.98]"
                 )}
               >
-                {step.icon}
+                {/* Defaulting to MapPin icon as structured originally */}
+                <MapPin className="h-7 w-7 bg-[#FFC357] p-1.5 rounded-full text-white" />
 
                 <h3 className="mb-4 text-[22px] text-zinc-800 mt-4">
                   {step.title}

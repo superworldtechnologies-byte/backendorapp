@@ -6,33 +6,21 @@ import { PawPrint } from "lucide-react";
 import { useInView } from "react-intersection-observer";
 import { cn } from "@/lib/utils";
 
-const stats = [
-    { value: "12,500+", label: "Pets Treated with Care", delay: "delay-0" },
-    { value: "3,200+", label: "Free Health Checkups", delay: "delay-100" },
-    { value: "8,400+", label: "Grooming Appointments", delay: "delay-200" },
-    { value: "2,000+", label: "Pre Sales Service", delay: "delay-300" },
-];
-
-const benefits = [
-    { text: "Skilled and compassionate veterinary team", delay: "delay-[200ms]" },
-    { text: "Personalized care tailored to each pet's needs", delay: "delay-[400ms]" },
-    { text: "Years of trusted experience in pet wellness", delay: "delay-[600ms]" },
-];
 
 // High-performance Count-Up Component for numbers
 function Counter({ value, trigger }: { value: string; trigger: boolean }) {
     const [count, setCount] = useState(0);
     const numericTarget = parseInt(value.replace(/,/g, '').replace(/\+/g, ''), 10);
     const hasPlus = value.includes('+');
-
+    
     useEffect(() => {
         if (!trigger) return;
-
+        
         let frame = 0;
         const duration = 2000; // 2 seconds animation duration
         const totalFrames = 120; // ~60fps target over 2s
         const frameDuration = duration / totalFrames;
-
+        
         const counterInterval = setInterval(() => {
             frame++;
             // Smooth ease-out progress function
@@ -40,16 +28,16 @@ function Counter({ value, trigger }: { value: string; trigger: boolean }) {
             const easeOutProgress = progress * (2 - progress); 
             
             setCount(Math.round(numericTarget * easeOutProgress));
-
+            
             if (frame === totalFrames) {
                 clearInterval(counterInterval);
                 setCount(numericTarget);
             }
         }, frameDuration);
-
+        
         return () => clearInterval(counterInterval);
     }, [trigger, numericTarget]);
-
+    
     return (
         <>
             {count.toLocaleString()}
@@ -57,8 +45,23 @@ function Counter({ value, trigger }: { value: string; trigger: boolean }) {
         </>
     );
 }
+const defaultWhyChooseUsData = {
+    stats: [
+        { value: "12,500+", label: "Pets Treated with Care", delay: "delay-0" },
+        { value: "3,200+", label: "Free Health Checkups", delay: "delay-100" },
+        { value: "8,400+", label: "Grooming Appointments", delay: "delay-200" },
+        { value: "2,000+", label: "Pre Sales Service", delay: "delay-300" },
+    ],
+    tagline: "Why choose us",
+    heading: <>Putting your pet’s comfort and wellness first</>,
+    benefits: [
+        { text: "Skilled and compassionate veterinary team", delay: "delay-[200ms]" },
+        { text: "Personalized care tailored to each pet's needs", delay: "delay-[400ms]" },
+        { text: "Years of trusted experience in pet wellness", delay: "delay-[600ms]" },
+    ],
+};
 
-export default function WhyChooseUs() {
+export default function WhyChooseUs({ data = defaultWhyChooseUsData }) {
     const { ref: statsRef, inView: statsInView } = useInView({ triggerOnce: true, threshold: 0.15 });
     const { ref: contentRef, inView: contentInView } = useInView({ triggerOnce: true, threshold: 0.15 });
 
@@ -67,8 +70,8 @@ export default function WhyChooseUs() {
             {/* Stats */}
             <section ref={statsRef} className="relative -mt-28 bg-center py-16 md:py-20 lg:py-28 overflow-hidden">
                 <Image
-                    src="/whychoseus.avif"
-                    alt="Why Choose Us"
+                    src='/whychoseus.avif'
+                    alt='Background Image'
                     fill
                     priority
                     className="object-cover -z-20"
@@ -76,7 +79,7 @@ export default function WhyChooseUs() {
 
                 <div className="relative mx-auto max-w-7xl py-8 px-6 z-10">
                     <div className="grid grid-cols-2 gap-10 lg:grid-cols-4">
-                        {stats.map((item) => (
+                        {data.stats.map((item) => (
                             <div
                                 key={item.label}
                                 className={cn(
@@ -111,7 +114,7 @@ export default function WhyChooseUs() {
                             )}>
                                 <PawPrint size={18} className="fill-[#FFC357] text-[#FFC357]" />
                                 <span className="text-[17px] text-zinc-800 font-medium">
-                                    Why choose us
+                                    {data.tagline}
                                 </span>
                             </div>
 
@@ -120,12 +123,12 @@ export default function WhyChooseUs() {
                                 "max-w-[520px] text-4xl md:text-5xl leading-tight text-zinc-800 transition-all duration-700 delay-100 ease-out transform",
                                 contentInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                             )}>
-                                Putting your pet’s comfort and wellness first
+                                {data.heading}
                             </h2>
 
                             {/* Bullet points with cascading delayed entries */}
                             <div className="mt-8 space-y-5">
-                                {benefits.map((item) => (
+                                {data.benefits.map((item) => (
                                     <div
                                         key={item.text}
                                         className={cn(
@@ -143,12 +146,15 @@ export default function WhyChooseUs() {
                             </div>
 
                             {/* CTA Button */}
-                            <button className={cn(
-                                "mt-8 rounded-full bg-[#FFC357] px-6 py-3 text-sm text-zinc-900 transition-all duration-500 delay-[800ms] ease-out transform hover:scale-105 active:scale-95 hover:opacity-90",
-                                contentInView ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                            )}>
+                            <a
+                                href='Schedule a visit'
+                                className={cn(
+                                    "inline-block mt-8 rounded-full bg-[#FFC357] px-6 py-3 text-sm font-medium text-zinc-900 transition-all duration-500 delay-[800ms] ease-out transform hover:scale-105 active:scale-95 hover:opacity-90",
+                                    contentInView ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                                )}
+                            >
                                 Schedule a visit
-                            </button>
+                            </a>
                         </div>
 
                         {/* Image Block */}
@@ -158,8 +164,8 @@ export default function WhyChooseUs() {
                                 contentInView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-[0.98]"
                             )}>
                                 <Image
-                                    src="/4Yb5t7I9TwOK30Fgn80wjPtAmQ.avif"
-                                    alt="Pet Care"
+                                    src='/4Yb5t7I9TwOK30Fgn80wjPtAmQ.avif'
+                                    alt='Pet Care'
                                     width={450}
                                     height={495}
                                     className="h-auto w-full object-contain"

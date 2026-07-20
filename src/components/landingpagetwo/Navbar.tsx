@@ -5,16 +5,22 @@ import { usePathname } from "next/navigation";
 import { useInView } from "react-intersection-observer";
 import { Home, Briefcase, Calendar, Dog, User } from "lucide-react";
 
-// Nav config mapped to your actual app routes, adding Lucide icons for mobile
-const navLinks = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/services", label: "Services", icon: Briefcase },
-  { href: "/bookings", label: "Bookings", icon: Calendar },
-  { href: "/pets", label: "Pets", icon: Dog },
-  { href: "/profile", label: "Profile", icon: User },
-];
+// Nav config and assets abstracted into a default object
+const defaultNavbarData = {
+  navLinks: [
+    { href: "/", label: "Home", icon: Home },
+    { href: "/services", label: "Services", icon: Briefcase },
+    { href: "/bookings", label: "Bookings", icon: Calendar },
+    { href: "/pets", label: "Pets", icon: Dog },
+    { href: "/profile", label: "Profile", icon: User },
+  ],
+  cta: {
+    label: "Schedule a visit",
+    href: "/services"
+  }
+};
 
-export default function Navbar() {
+export default function Navbar({ data = defaultNavbarData }) {
   const pathname = usePathname();
   
   // Replace window.addEventListener scroll with Intersection Observer
@@ -29,7 +35,7 @@ export default function Navbar() {
   return (
     <>
       {/* Invisible anchor at the very top of the page to track scroll state */}
-      <div ref={ref} className=" hidden sm:absolute top-0 left-0 w-full h-5 pointer-events-none" />
+      <div ref={ref} className="hidden sm:absolute top-0 left-0 w-full h-5 pointer-events-none" />
 
       {/* =========================================
           DESKTOP TOP NAVIGATION (Hidden on Mobile)
@@ -49,7 +55,7 @@ export default function Navbar() {
 
           {/* Desktop Navigation Menu */}
           <div className="flex items-center bg-zinc-50 border border-zinc-200 rounded-full px-1 py-1 gap-2">
-            {navLinks.map((link) => {
+            {data.navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <a
@@ -69,10 +75,10 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <a
-            href="/services"
+            href={data.cta.href}
             className="flex items-center gap-2.5 bg-[#FFC357] text-sm font-medium pl-5 pr-2 py-2 rounded-full cursor-pointer transition-transform hover:scale-105"
           >
-            Schedule a visit
+            {data.cta.label}
             <span className="w-7 h-7 rounded-full bg-white flex items-center justify-center">
               <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
                 <path d="M.6 4.602h10m-4-4 4 4-4 4" stroke="#3f3f47" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
@@ -85,7 +91,7 @@ export default function Navbar() {
       {/* =========================================
           MOBILE TOP HEADER (Visible only on Mobile)
           ========================================= */}
-      <div className={`hidden fixed top-0 left-0 w-full z-40 p-4 transition-all duration-300 ${
+      <div className={`fixed top-0 left-0 w-full z-40 p-4 transition-all duration-300 md:hidden ${
           isScrolled ? "bg-white/80 backdrop-blur-lg shadow-sm" : "bg-transparent"
       }`}>
         <a href="/">
@@ -100,7 +106,7 @@ export default function Navbar() {
         className="md:hidden fixed inset-x-0 bottom-4 mx-auto z-50 w-fit bg-white border border-zinc-200 rounded-full flex items-center p-2 shadow-xl space-x-1"
         aria-label="Bottom Navigation"
       >
-        {navLinks.map((link) => {
+        {data.navLinks.map((link) => {
           const Icon = link.icon;
           const isActive = pathname === link.href;
 
@@ -122,7 +128,7 @@ export default function Navbar() {
                 className="transition-colors duration-200 flex-shrink-0"
               />
 
-              {/* CSS Animated Label (Replaces Framer Motion) */}
+              {/* CSS Animated Label */}
               <div
                 className="overflow-hidden flex items-center transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]"
                 style={{

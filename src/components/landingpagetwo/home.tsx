@@ -1,10 +1,22 @@
 'use client';
 
+import React from "react";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 import { cn } from "@/lib/utils"; // Adjust path to your lib folder if needed
 
-export default function Hero() {
+interface HeroData {
+    heading: React.ReactNode;
+    description: React.ReactNode;
+    socialProof?: { stars: number; text: string };
+}
+
+const defaultHeroData: HeroData = {
+    heading: <>Your Pet’s Safe and Joyful Haven</>,
+    description: <>We provide professional care that keeps <br className="hidden sm:block" /> every pet safe, relaxed, and joyful.</>,
+};
+
+export default function Hero({ data = defaultHeroData }: { data?: HeroData }) {
     const { ref, inView } = useInView({
         triggerOnce: true,
         threshold: 0.05,
@@ -79,7 +91,7 @@ export default function Hero() {
                                     "text-[38px] leading-[1.1] md:text-[46px] md:leading-[50.6px] font-normal text-zinc-800 transition-all duration-700 delay-200 ease-out transform",
                                     inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                                 )}>
-                                    Your Pet’s Safe and Joyful Haven
+                                    {data.heading}
                                 </h1>
 
                                 {/* [PHASE 2B] Paragraph Reveal */}
@@ -87,22 +99,20 @@ export default function Hero() {
                                     "text-[17px] leading-[25.2px] text-zinc-800 transition-all duration-700 delay-400 ease-out transform",
                                     inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
                                 )}>
-                                    We provide professional care that keeps
-                                    <br className="hidden sm:block" />
-                                    every pet safe, relaxed, and joyful.
+                                    {data.description}
                                 </p>
                             </div>
 
                             {/* [PHASE 3] Action Button Container - Soft Scale Pop */}
                             <div className={cn(
-                                "flex items-center mt-3 transition-all duration-500 delay-600 ease-out transform",
+                                "flex flex-col items-center lg:items-start mt-3 transition-all duration-500 delay-600 ease-out transform",
                                 inView ? "opacity-100 scale-100" : "opacity-0 scale-75"
                             )}>
                                 <a 
-                                    href="/services" 
+                                    href={"/services"} 
                                     className="flex mx-auto md:mx-0 items-center gap-2.5 bg-[#FFC357] text-sm font-medium pl-5 pr-2 py-2 rounded-full cursor-pointer border-0 hover:scale-105 active:scale-95 transition-transform duration-200"
                                 >
-                                    Schedule a visit
+                                   Schedule a visit
                                     <span className="w-7 h-7 rounded-full bg-white flex items-center justify-center">
                                         <svg
                                             width="12"
@@ -121,6 +131,25 @@ export default function Hero() {
                                         </svg>
                                     </span>
                                 </a>
+
+                                {/* Optional Dynamic Social Proof Badge */}
+                                {data.socialProof && (
+                                    <div className="flex items-center gap-2 mt-4 text-xs font-medium text-zinc-700">
+                                        <div className="flex items-center gap-0.5">
+                                            {Array.from({ length: data.socialProof.stars }).map((_, idx) => (
+                                                <svg
+                                                    key={idx}
+                                                    className="w-4 h-4 text-amber-400 fill-current"
+                                                    viewBox="0 0 20 20"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                            ))}
+                                        </div>
+                                        <span>{data.socialProof.text}</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

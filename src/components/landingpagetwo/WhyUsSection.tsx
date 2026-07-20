@@ -19,42 +19,36 @@ const features = [
     title: "Tailored Wellness Plans",
     description:
       "Comprehensive checkups, vaccinations, and preventive care designed to keep your pet healthy, active, and thriving year-round.",
-    bg: "/irH7Dag30YqNcSK7sjeAhwh3P8.avif",
   },
   {
     icon: FaPumpSoap,
     title: "Professional Grooming",
     description:
       "Expert grooming, bathing, and coat care that leaves your pet looking clean, feeling comfortable, and smelling fresh every single time.",
-    bg: "/irH7Dag30YqNcSK7sjeAhwh3P8.avif",
   },
   {
     icon: FaCarrot,
     title: "Nutritional Guidance",
     description:
       "Customized meal plans and expert nutrition advice to support your pet's overall health, energy, and long-term wellness.",
-    bg: "/irH7Dag30YqNcSK7sjeAhwh3P8.avif",
   },
   {
     icon: FaPaw,
     title: "Emergency Care",
     description:
       "Fast, reliable medical attention when your pet needs urgent support, ensuring quick assessment and prompt treatment.",
-    bg: "/irH7Dag30YqNcSK7sjeAhwh3P8.avif",
   },
   {
     icon: FaPhone,
     title: "Behavioral Support",
     description:
       "Personalized training and behavior consultations that help your pet feel confident, well-behaved, and emotionally balanced.",
-    bg: "/irH7Dag30YqNcSK7sjeAhwh3P8.avif",
   },
   {
     icon: FaTooth,
     title: "Dental Health",
     description:
       "Thorough dental cleanings and oral care services to maintain strong teeth, healthy gums, and fresh breath.",
-    bg: "/irH7Dag30YqNcSK7sjeAhwh3P8.avif",
   },
 ];
 
@@ -105,12 +99,12 @@ export default function WhyUsSection() {
               }}
             >
               <Image
-                src={feature.bg}
-                alt=""
+                src="/irH7Dag30YqNcSK7sjeAhwh3P8.avif"
+                alt="Feature illustration"
                 fill
                 className="  absolute "
               />
-              <div className="relative z-10 flex h-full flex-col p-6">
+              <div className="relative z-10 flex h-full flex-col p-6 justify-center ">
                 <feature.icon className="h-9 w-9 text-zinc-900" />
 
                 <h3 className="mt-6 text-[22px] text-zinc-800">

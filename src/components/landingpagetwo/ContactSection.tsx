@@ -1,13 +1,38 @@
 'use client';
 
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import { useInView } from "react-intersection-observer";
 import { cn } from "@/lib/utils";
+import PawIcon from "@/icons/icon1";
+import { PawPrintIcon } from "lucide-react";
 
-export default function ContactSection() {
+// Define interface for full type safety
+interface ContactData {
+  heading: string;
+  subText: string;
+  sideImage: { src: string; alt: string; badgeText: string};
+  formHeading: string;
+  services: string[];
+  ctaLabel: string;
+}
+
+const defaultContactData: ContactData = {
+  heading: "Get in touch with our pet care experts",
+  subText: "Exceptional care and wellness services designed to keep pets thriving.",
+  sideImage: {
+    src: "DhxpPNyvDS30ZM9WEMahhQ1PY.avif",
+    alt: "Pet care context",
+    badgeText: "Your pet's comfort, health, and happiness.",
+  },
+  formHeading: "Send us a message",
+  services: ["Pet Grooming", "Veterinary Care", "Pet Boarding", "Training"],
+  ctaLabel: "Submit"
+};
+
+export default function ContactSection({ data = defaultContactData }: { data?: ContactData }) {
   const { ref, inView } = useInView({
     triggerOnce: true,
-    threshold: 0.15, // Triggers when 15% of the section is visible
+    threshold: 0.15,
   });
 
   const [form, setForm] = useState({
@@ -19,11 +44,17 @@ export default function ContactSection() {
     message: "",
   });
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    // Handle form submission logic here
+    console.log("Submitted Data:", form);
   };
 
   return (
@@ -37,7 +68,7 @@ export default function ContactSection() {
               "max-w-lg text-4xl md:text-5xl font-semibold text-zinc-800 leading-tight transition-all duration-700 ease-out transform",
               inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             )}>
-              Get in touch with our pet care experts
+              {data.heading}
             </h2>
 
             <div className={cn(
@@ -47,21 +78,17 @@ export default function ContactSection() {
               <div
                 className="relative h-[500px] bg-cover bg-center"
                 style={{
-                  backgroundImage:
-                    "url('https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Q8iVEHnhHH/zma9pqp6_expires_30_days.png')",
+                  backgroundImage: `url('${data.sideImage.src}')`,
                 }}
               >
                 <div className="absolute bottom-4 left-4 right-4">
                   <div className="flex items-center justify-between rounded-full bg-white p-3 shadow-lg">
                     <p className="max-w-xs text-sm text-zinc-500">
-                      Your pet's comfort, health, and happiness.
+                      {data.sideImage.badgeText}
                     </p>
 
-                    <img
-                      src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Q8iVEHnhHH/npdhln9l_expires_30_days.png"
-                      alt="Pet"
-                      className="h-14 w-14 rounded-full object-cover"
-                    />
+                   <PawPrintIcon className="h-10 w-10  fill-black  bg-[#FFC357] p-1.5 rounded-full " />
+
                   </div>
                 </div>
               </div>
@@ -71,7 +98,7 @@ export default function ContactSection() {
               "text-zinc-600 transition-all duration-700 delay-300 ease-out transform",
               inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             )}>
-              Exceptional care and wellness services designed to keep pets thriving.
+              {data.subText}
             </p>
           </div>
 
@@ -81,10 +108,10 @@ export default function ContactSection() {
             inView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-[0.98]"
           )}>
             <h3 className="mb-8 text-3xl font-semibold text-zinc-800">
-              Send us a message
+              {data.formHeading}
             </h3>
 
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-800">
@@ -97,6 +124,7 @@ export default function ContactSection() {
                     onChange={handleChange}
                     placeholder="Enter your full name"
                     className="w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none focus:border-yellow-500"
+                    required
                   />
                 </div>
 
@@ -111,6 +139,7 @@ export default function ContactSection() {
                     onChange={handleChange}
                     placeholder="Enter your email"
                     className="w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none focus:border-yellow-500"
+                    required
                   />
                 </div>
               </div>
@@ -124,13 +153,14 @@ export default function ContactSection() {
                     name="service"
                     value={form.service}
                     onChange={handleChange}
-                    className="w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none focus:border-yellow-500"
+                    className="w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none focus:border-yellow-500 bg-white"
                   >
                     <option value="">Select a service</option>
-                    <option>Pet Grooming</option>
-                    <option>Veterinary Care</option>
-                    <option>Pet Boarding</option>
-                    <option>Training</option>
+                    {data.services.map((service, index) => (
+                      <option key={index} value={service}>
+                        {service}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -180,7 +210,7 @@ export default function ContactSection() {
                 type="submit"
                 className="w-full rounded-full bg-[#FFC357] py-4 font-medium text-zinc-900 transition hover:opacity-90 transform active:scale-[0.99] duration-200"
               >
-                Submit
+                {data.ctaLabel}
               </button>
             </form>
           </div>
