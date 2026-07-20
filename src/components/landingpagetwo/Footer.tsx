@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Mail, Map, Phone } from "lucide-react";
 import { FaFacebookF, FaInstagram } from "react-icons/fa6";
 
@@ -7,7 +8,7 @@ const socials = [
 ];
 const defaultFooterData = {
     tagline: "Trusted pet care for a\nhealthier, happier life.",
-   
+
     contact: {
         title: "Contact Us",
         address: "Amsterdam Netherlands",
@@ -17,7 +18,8 @@ const defaultFooterData = {
     copyright: "©2026 Pawsy. All rights reserved."
 };
 
-export default function Footer({ data = defaultFooterData ,logo}:any) {
+export default function Footer({ data = defaultFooterData, logo }: any) {
+    const isBlackLogo = logo.status === "approved_as_black";
     return (
         <footer className="bg-gradient-to-b from-white to-[#E7EBFC] px-4 py-10">
             <div
@@ -31,7 +33,14 @@ export default function Footer({ data = defaultFooterData ,logo}:any) {
                         {/* Left Side */}
                         <div className="space-y-10">
                             <div>
-                                <img src={logo.src} alt={logo.alt} className="h-10 w-10 text-black" />
+                                <img
+                                    src={logo.src}
+                                    alt={logo.alt || "Business Logo"}
+                                    className={cn(
+                                        "h-14 w-auto max-w-full object-contain object-left transition-all", // Smart scaling fix
+                                        isBlackLogo && "brightness-0"
+                                    )}
+                                />
                                 <p className="mt-3 max-w-xs whitespace-pre-line text-base text-zinc-900">
                                     {data.tagline}
                                 </p>
