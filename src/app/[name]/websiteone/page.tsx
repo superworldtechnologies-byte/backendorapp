@@ -39,7 +39,7 @@ export default async function WebsiteOne({
       <ProcessSection data={data.process} />
       <ComparisonSection data={data.comparison} />
       <GallerySection></GallerySection>
- <ReviewsSection  data={data.reviews} />
+      <ReviewsSection data={data.reviews} />
       <InsightsSection data={data.insights} />
       <CTASection />
       <Footer data={data.footer} />
