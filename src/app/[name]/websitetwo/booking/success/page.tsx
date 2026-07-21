@@ -11,7 +11,7 @@ export default function BookingSuccessPage() {
 
       <div className="mt-6 flex justify-center gap-3">
         <Button asChild>
-          <Link href="/services">Book another service</Link>
+          <Link href="./websitetwo/services">Book another service</Link>
         </Button>
         <Button asChild variant="outline">
           <Link href="/">Go home</Link>

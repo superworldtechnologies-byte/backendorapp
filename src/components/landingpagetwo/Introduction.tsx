@@ -43,7 +43,7 @@ export default function Introduction({ data = defaultIntroData }: { data?: Intro
     <section ref={ref} className="relative">
       <div className="mx-auto max-w-7xl px-6 lg:px-12">
         <div className="grid items-center gap-12 lg:grid-cols-2">
-          
+
           {/* Mobile Text (Left Side on DOM, Hidden on Desktop) */}
           <div className="max-w-[520px] h-full md:hidden flex flex-col justify-center mt-40 items-start">
             {/* Label */}
@@ -77,8 +77,8 @@ export default function Introduction({ data = defaultIntroData }: { data?: Intro
             </p>
 
             {/* CTA */}
-            <Link 
-              href="/services"
+            <Link
+              href="./websitetwo/services"
               className={cn(
                 "mt-8 inline-block rounded-full bg-[#FFC357] px-7 py-3 text-base text-zinc-900 transition hover:opacity-90 duration-500 delay-600 ease-out transform",
                 inView ? "opacity-100 scale-100" : "opacity-0 scale-95"
@@ -139,8 +139,8 @@ export default function Introduction({ data = defaultIntroData }: { data?: Intro
             </p>
 
             {/* CTA */}
-            <Link 
-              href="/services"
+            <Link
+              href="./websitetwo/services"
               className={cn(
                 "mt-8 inline-block rounded-full bg-[#FFC357] px-7 py-3 text-base text-zinc-900 transition hover:opacity-90 duration-500 delay-600 ease-out transform",
                 inView ? "opacity-100 scale-100" : "opacity-0 scale-95"

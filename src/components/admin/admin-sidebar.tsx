@@ -34,7 +34,7 @@ const navItems = [
   { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { title: "Bookings", href: "/admin/bookings", icon: CalendarDays },
   { title: "Calendar", href: "/admin/calendar", icon: Calendar },
-  { title: "Services", href: "/admin/services", icon: Briefcase },
+  { title: "Services", href: "/admin./websitetwo/services", icon: Briefcase },
   { title: "Availability", href: "/admin/availability", icon: Clock },
   { title: "Coupons", href: "/admin/coupons", icon: Ticket },
   { title: "Analytics", href: "/admin/analytics", icon: TrendingUp },
@@ -59,8 +59,8 @@ export function AdminSidebar({ user }: { user: any }) {
   };
 
   return (
-    <Sidebar 
-      collapsible="icon" 
+    <Sidebar
+      collapsible="icon"
       className="border-r border-sidebar-border bg-sidebar"
     >
       {/* 1. Header with dynamic collapsing profile */}
@@ -73,7 +73,7 @@ export function AdminSidebar({ user }: { user: any }) {
           <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all duration-200 hover:scale-105">
             <PawPrint className="size-4" />
           </div>
-          
+
           {/* Expanded State Text */}
           {!isCollapsed && (
             <div className="grid flex-1 text-left text-sm leading-tight transition-opacity duration-300">
@@ -95,9 +95,9 @@ export function AdminSidebar({ user }: { user: any }) {
             const isActive = pathname === item.href;
             return (
               <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton 
-                  asChild 
-                  isActive={isActive} 
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive}
                   tooltip={item.title}
                   className="w-full"
                 >
@@ -121,7 +121,7 @@ export function AdminSidebar({ user }: { user: any }) {
                         isActive ? "text-primary" : "text-muted-foreground/80 group-hover:text-sidebar-accent-foreground"
                       )}
                     />
-                    
+
                     {!isCollapsed && (
                       <span className={cn("truncate flex-1 transition-opacity duration-200", isActive ? "font-semibold text-primary" : "text-muted-foreground/80 group-hover:text-sidebar-accent-foreground")}>
                         {item.title}
@@ -156,7 +156,7 @@ export function AdminSidebar({ user }: { user: any }) {
                 {getInitials(user?.name)}
               </AvatarFallback>
             </Avatar>
-            
+
             {!isCollapsed && (
               <div className="grid flex-1 text-left text-xs leading-tight min-w-0">
                 <span className="truncate font-semibold text-sidebar-foreground">

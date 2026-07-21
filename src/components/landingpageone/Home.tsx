@@ -39,13 +39,13 @@ export default function HeroSection({ data = defaultHeroData }) {
 
                     {/* Animate CTA from the Bottom with a delay */}
                     <Reveal animation="up" delay="delay-200" className="mt-10 md:mt-12">
-                        <button className="group relative bg-[#a35c38] text-white rounded-2xl py-3.5 px-6 flex items-center justify-center gap-[14px] w-fit overflow-hidden hover:bg-[#8a4e2f] transition-all duration-300">
+                        <a href="./websitetwo/services" className="group relative bg-[#a35c38] text-white rounded-2xl py-3.5 px-6 flex items-center justify-center gap-[14px] w-fit overflow-hidden hover:bg-[#8a4e2f] transition-all duration-300">
                             <Calendar className="w-5 h-5 flex-shrink-0" />
                             <span className="font-medium text-[16px] whitespace-nowrap">
                                 {data.cta.label}
                             </span>
                             <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-45deg] group-hover:animate-[shine_1.5s_ease-in-out_infinite]" />
-                        </button>
+                        </a>
                     </Reveal>
 
                     {/* Animate Stats from the Right with a longer delay */}

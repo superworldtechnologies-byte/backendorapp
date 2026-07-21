@@ -108,11 +108,11 @@ export default function Hero({ data = defaultHeroData }: { data?: HeroData }) {
                                 "flex flex-col items-center lg:items-start mt-3 transition-all duration-500 delay-600 ease-out transform",
                                 inView ? "opacity-100 scale-100" : "opacity-0 scale-75"
                             )}>
-                                <a 
-                                    href={"/services"} 
+                                <a
+                                    href={"./websitetwo/services"}
                                     className="flex mx-auto md:mx-0 items-center gap-2.5 bg-[#FFC357] text-sm font-medium pl-5 pr-2 py-2 rounded-full cursor-pointer border-0 hover:scale-105 active:scale-95 transition-transform duration-200"
                                 >
-                                   Schedule a visit
+                                    Schedule a visit
                                     <span className="w-7 h-7 rounded-full bg-white flex items-center justify-center">
                                         <svg
                                             width="12"

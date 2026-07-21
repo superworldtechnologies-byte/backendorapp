@@ -28,7 +28,7 @@ export default async function WebsiteTwo({
   }
 
   const data = dbData.websiteOneData;
-console.log(data.contact);
+console.log(data)
   return (
     <main>
       {/* Notice Navbar and Footer are brought in here directly */}

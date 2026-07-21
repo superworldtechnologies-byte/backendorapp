@@ -148,7 +148,7 @@ export default function WhyChooseUs({ data = defaultWhyChooseUsData }) {
 
                             {/* CTA Button */}
                             <a
-                                href='Schedule a visit'
+                                href='./websitetwo/services'
                                 className={cn(
                                     "inline-block mt-8 rounded-full bg-[#FFC357] px-6 py-3 text-sm font-medium text-zinc-900 transition-all duration-500 delay-[800ms] ease-out transform hover:scale-105 active:scale-95 hover:opacity-90",
                                     contentInView ? "opacity-100 scale-100" : "opacity-0 scale-95"

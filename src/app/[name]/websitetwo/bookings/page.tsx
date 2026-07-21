@@ -25,7 +25,7 @@ export default async function BookingsPage() {
           </p>
         </div>
         <Link
-          href="/services"
+          href="./websitetwo/services"
           className="inline-flex w-fit items-center rounded-full bg-[#FFC357] px-5 py-2.5 text-sm font-medium text-zinc-900"
         >
           Book a service

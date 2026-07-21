@@ -104,7 +104,7 @@ function getAccent(name: string) {
 }
 
 export function ServicesCard({ service }: { service: any }) {
-    const detailHref = `/services/${service.slug || service.id}`;
+    const detailHref = `./websitetwo/services/${service.slug || service.id}`;
     const startingPrice = getStartingPrice(service);
     const optionsCount = getOptionsCount(service);
     const duration = getDuration(service);

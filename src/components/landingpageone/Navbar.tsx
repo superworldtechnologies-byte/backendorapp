@@ -8,16 +8,10 @@ import { cn } from "@/lib/utils";
 
 const defaultNavbarData = {
   logo: { src: "", alt: "Logo", status: "" },
-  navLinks: [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/services", label: "Services", icon: Briefcase },
-    { href: "/bookings", label: "Bookings", icon: Calendar },
-    { href: "/pets", label: "Pets", icon: Dog },
-    { href: "/profile", label: "Profile", icon: User },
-  ],
+
   cta: {
     label: "Schedule a visit",
-    href: "/services"
+    href: "./websitetwo/services"
   }
 };
 
@@ -35,20 +29,19 @@ export default function Navbar({ data = defaultNavbarData }) {
 
       {/* DESKTOP TOP NAVIGATION */}
       <nav className="hidden md:block fixed top-0 left-0 w-full z-50">
-        <div className={`px-6 md:px-12 lg:px-24 xl:px-40 py-3 flex items-center justify-between relative transition-all duration-300 ${
-            isScrolled ? "bg-white/20 backdrop-blur-3xl" : "bg-transparent backdrop-blur-none"
+        <div className={`px-6 md:px-12 lg:px-24 xl:px-40 py-3 flex items-center justify-between relative transition-all duration-300 ${isScrolled ? "bg-white/20 backdrop-blur-3xl" : "bg-transparent backdrop-blur-none"
           }`}
         >
           {/* Scalable Logo Wrapper */}
           <a href="/" className="relative flex items-center justify-start w-40 h-12">
             {logo.src ? (
-              <img 
-                src={logo.src} 
-                alt={logo.alt || "Business Logo"} 
+              <img
+                src={logo.src}
+                alt={logo.alt || "Business Logo"}
                 className={cn(
                   "h-full w-auto max-w-full object-contain object-left transition-all", // Smart scaling fix
                   isBlackLogo && "brightness-0"
-                )} 
+                )}
               />
             ) : (
               <PawIcon className="h-11 w-11 text-[#FFC357]" />
@@ -57,15 +50,20 @@ export default function Navbar({ data = defaultNavbarData }) {
 
           {/* Desktop Navigation Menu */}
           <div className="flex items-center bg-zinc-50 border border-zinc-200 rounded-full px-1 py-1 gap-2">
-            {(data.navLinks || defaultNavbarData.navLinks).map((link) => {
+            {[
+              { href: "/", label: "Home", icon: Home },
+              { href: "./websitetwo/services", label: "Services", icon: Briefcase },
+              { href: "/bookings", label: "Bookings", icon: Calendar },
+              { href: "/pets", label: "Pets", icon: Dog },
+              { href: "/profile", label: "Profile", icon: User },
+            ].map((link) => {
               const isActive = pathname === link.href;
               return (
                 <a
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-1.5 rounded-full text-sm transition-all duration-200 ${
-                    isActive ? "bg-white border border-zinc-200 font-medium text-zinc-800 shadow-sm" : "text-zinc-500 hover:text-zinc-800"
-                  }`}
+                  className={`px-4 py-1.5 rounded-full text-sm transition-all duration-200 ${isActive ? "bg-white border border-zinc-200 font-medium text-zinc-800 shadow-sm" : "text-zinc-500 hover:text-zinc-800"
+                    }`}
                 >
                   {link.label}
                 </a>
@@ -73,7 +71,7 @@ export default function Navbar({ data = defaultNavbarData }) {
             })}
           </div>
 
-          <a href={data.cta?.href || "/"} className="flex items-center gap-2.5 bg-[#FFC357] text-sm font-medium pl-5 pr-2 py-2 rounded-full cursor-pointer transition-transform hover:scale-105">
+          <a href="./websitetwo/services" className="flex items-center gap-2.5 bg-[#FFC357] text-sm font-medium pl-5 pr-2 py-2 rounded-full cursor-pointer transition-transform hover:scale-105">
             {data.cta?.label || "Schedule a visit"}
             <span className="w-7 h-7 rounded-full bg-white flex items-center justify-center">
               <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
@@ -85,18 +83,17 @@ export default function Navbar({ data = defaultNavbarData }) {
       </nav>
 
       {/* MOBILE TOP HEADER */}
-      <div className={`fixed top-0 left-0 w-full z-40 p-4 transition-all duration-300 md:hidden ${
-          isScrolled ? "bg-white/80 backdrop-blur-lg shadow-sm" : "bg-transparent"
-      }`}>
+      <div className={`fixed top-0 left-0 w-full z-40 p-4 transition-all duration-300 md:hidden ${isScrolled ? "bg-white/80 backdrop-blur-lg shadow-sm" : "bg-transparent"
+        }`}>
         <a href="/" className="relative flex items-center w-32 h-10">
           {logo.src ? (
-            <img 
-              src={logo.src} 
-              alt={logo.alt || "Business Logo"} 
+            <img
+              src={logo.src}
+              alt={logo.alt || "Business Logo"}
               className={cn(
                 "h-full w-auto max-w-full object-contain object-left transition-all", // Smart scaling fix
                 isBlackLogo && "brightness-0"
-              )} 
+              )}
             />
           ) : (
             <PawIcon className="h-10 w-10 text-[#FFC357]" />
@@ -106,12 +103,17 @@ export default function Navbar({ data = defaultNavbarData }) {
 
       {/* MOBILE BOTTOM NAVIGATION */}
       <nav className="md:hidden fixed inset-x-0 bottom-4 mx-auto z-50 w-fit bg-white border border-zinc-200 rounded-full flex items-center p-2 shadow-xl space-x-1">
-        {(data.navLinks || defaultNavbarData.navLinks).map((link) => {
+        {[
+          { href: "/", label: "Home", icon: Home },
+          { href: "./websitetwo/services", label: "Services", icon: Briefcase },
+          { href: "/bookings", label: "Bookings", icon: Calendar },
+          { href: "/pets", label: "Pets", icon: Dog },
+          { href: "/profile", label: "Profile", icon: User },
+        ].map((link) => {
           const Icon = link.icon;
           const isActive = pathname === link.href;
           return (
-            <a key={link.href} href={link.href} className={`flex items-center gap-0 px-3 py-2 rounded-full transition-colors duration-200 relative h-10 min-w-[44px] ${
-                isActive ? "bg-zinc-100 text-zinc-900 gap-2" : "bg-transparent text-zinc-500 hover:bg-zinc-50"
+            <a key={link.href} href={link.href} className={`flex items-center gap-0 px-3 py-2 rounded-full transition-colors duration-200 relative h-10 min-w-[44px] ${isActive ? "bg-zinc-100 text-zinc-900 gap-2" : "bg-transparent text-zinc-500 hover:bg-zinc-50"
               }`}
             >
               <Icon size={22} strokeWidth={2} className="flex-shrink-0" />

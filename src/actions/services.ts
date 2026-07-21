@@ -67,7 +67,7 @@ export async function saveServiceAction(formData: FormData) {
     updatedAt: new Date().toISOString(),
     createdAt: new Date().toISOString(),
   };
-console.log("Foreground push received:", payload);
+  console.log("Foreground push received:", payload);
   await setDoc(doc(db, "services", id), payload, { merge: true });
 
   revalidatePath("/admin/services");
